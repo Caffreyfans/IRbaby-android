@@ -7,7 +7,7 @@ android:
     - extra-android-support
 
 script:
-  - ./gradelew assembleDebug
+  - ./gradlew assembleDebug
 
 deploy:
   provider: releases
