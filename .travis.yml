@@ -14,10 +14,11 @@ script:
   - ./gradlew assembleDebug
   - ls ./app/build/outputs/apk
   - ls ./app/build/outputs/apk/debug
+  - cp ./app/build/outputs/apk/debug/app-debug.apk ./IRbaby.apk
 deploy:
   provider: releases
   api_key: "$TOKEN"
-  file: "app/build/outputs/apk/debug/debug-app.apk"
+  file: ./IRbaby.apk
   skip_cleanup: true
   on:
     tags: true
