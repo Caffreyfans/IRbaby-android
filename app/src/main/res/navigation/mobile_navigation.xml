@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_appliance">
+
+    <fragment
+        android:id="@+id/nav_appliance"
+        android:name="top.caffreyfans.irbaby.ui.appliances.ApplianceFragment"
+        android:label="@string/appliances"
+        tools:layout="@layout/fragment_appliance" />
+
+    <fragment
+        android:id="@+id/nav_device"
+        android:name="top.caffreyfans.irbaby.ui.devices.DeviceFragment"
+        android:label="@string/devices_manage"
+        tools:layout="@layout/fragment_device" />
+
+    <fragment
+        android:id="@+id/nav_slideshow"
+        android:name="top.caffreyfans.irbaby.ui.record.SlideshowFragment"
+        android:label="@string/record_ir"
+        tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_tools"
+        android:name="top.caffreyfans.irbaby.ui.tools.ToolsFragment"
+        android:label="@string/menu_tools"
+        tools:layout="@layout/fragment_tools" />
+
+    <fragment
+        android:id="@+id/nav_share"
+        android:name="top.caffreyfans.irbaby.ui.share.ShareFragment"
+        android:label="@string/menu_share"
+        tools:layout="@layout/fragment_share" />
+
+    <fragment
+        android:id="@+id/nav_send"
+        android:name="top.caffreyfans.irbaby.ui.send.SendFragment"
+        android:label="@string/menu_send"
+        tools:layout="@layout/fragment_send" />
+</navigation>

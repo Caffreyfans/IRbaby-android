@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#292929</color>
+    <color name="colorPrimaryDark">#343434</color>
+    <color name="colorAccent">#101010</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="primary_text">#000000</color>
+    <color name="secondary_text">#212121</color>
+    <color name="third_text">#727272</color>
+    <!--our detail accent colors -->
+    <color name="detail_accent_pane_background">#455A64</color>
+    <color name="detail_accent_label">#90A4AE</color>
+
+    <!-- the activated state color for a forecast list item -->
+    <color name="activityBackground">#E0E0E0</color>
+    <color name="dimgray">#696969</color>
+</resources>

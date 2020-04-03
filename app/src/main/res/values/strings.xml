@@ -1,0 +1,82 @@
+<resources>
+    <string name="app_name">IRbaby</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">IRbaby</string>
+    <string name="nav_header_subtitle">An ir remote even a baby can use</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="action_export">MQTT 导出</string>
+
+    <string name="appliances">家电控制</string>
+    <string name="devices_manage">设备管理</string>
+    <string name="record_ir">红外录制</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+
+    <!-- mode  -->
+    <string name="mode_cool">制冷</string>
+    <string name="mode_heat">加热</string>
+    <string name="mode_water">除湿</string>
+    <string name="mode_fan">送风</string>
+    <string name="mode_auto">自动</string>
+
+
+    <string name="ac_mode_ctrl_btn">模式</string>
+    <!-- fan speed -->
+    <string name="fan_speed">风速</string>
+    <string name="fan_speed_high">高</string>
+    <string name="fan_speed_middle">中</string>
+    <string name="fan_speed_low">低</string>
+
+    <!-- fan direction -->
+    <string name="fan_direction">风向</string>
+    <string name="fan_direction_up">上</string>
+    <string name="fan_direction_middle">中</string>
+    <string name="fan_direction_bottom">下</string>
+
+    <!--  swing  -->
+    <string name="swing">扫风</string>
+    <string name="swing_auto">自动</string>
+    <string name="swing_off">关闭</string>
+
+    <string name="temperature_subtract">一</string>
+    <string name="temperature">温度</string>
+    <string name="temperature_add">十</string>
+
+    <string name="ac_set_timer">定时</string>
+    <string name="ac_set_sleep">睡眠</string>
+    <string name="ac_options">···</string>
+
+    <!-- device type -->
+    <string name="ac_device">ac</string>
+    <string name="diy_device">diy</string>
+
+    <!--  AC parse hint   -->
+    <string name="ac_parse_hint">该类型是否可用？</string>
+    <string name="ac_parse_previous">上一个</string>
+    <string name="ac_parse_save">是</string>
+    <string name="ac_parse_next">下一个</string>
+
+    <!-- AC select title -->
+    <string name="select_category">电器选择</string>
+    <string name="select_brand">品牌选择</string>
+
+    <!-- Device Settings -->
+    <!-- MQTT -->
+    <string name="mqtt_title">MQTT</string>
+    <string name="mqtt_address">address</string>
+    <string name="mqtt_port">port</string>
+    <string name="mqtt_user">user</string>
+    <string name="mqtt_password">password</string>
+    <!-- IR -->
+    <string name="ir_title">引脚设置</string>
+    <string name="ir_send">发射引脚</string>
+    <string name="ir_receive">收接引脚</string>
+    <!-- Save -->
+    <string name="settings_save">保存</string>
+</resources>

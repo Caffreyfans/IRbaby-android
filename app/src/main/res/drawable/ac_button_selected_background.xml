@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--  按钮按下样式  -->
+    <item android:state_pressed="true">
+        <color android:color="@color/activityBackground" />
+        <layer-list>
+            <item android:left="4dp" android:top="4dp">
+                <shape>
+                    <solid android:color="@color/black" android:width="1dp"/>
+                    <corners android:radius="5dp" android:width="1dp"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+    <!--  按钮抬起样式  -->
+    <item android:state_pressed="false">
+        <color android:color="@color/white" />
+        <layer-list>
+            <item android:left="4dp" android:top="4dp">
+                <shape>
+                    <solid android:color="@color/black" android:width="1dp"/>
+                    <corners android:radius="5dp" android:width="1dp"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+<!--  按钮禁用样式  -->
+    <item android:state_enabled="false">
+        <color android:color="@color/white" />
+    </item>
+
+    <item>
+        <layer-list>
+            <item android:left="4dp" android:top="4dp">
+                <shape>
+                    <solid android:color="@color/black"/>
+                    <corners android:radius="5dp"/>
+                    <stroke android:color="@color/black" android:width="1dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

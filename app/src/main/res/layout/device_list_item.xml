@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--todo 1. design appliances list-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.daimajia.swipe.SwipeLayout
+        android:id="@+id/swipe"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <!-- Bottom View Start-->
+        <LinearLayout
+            android:id="@+id/bottom_wrapper"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:background="#66ddff00"
+            android:orientation="vertical"
+            android:weightSum="1">
+            <!--What you want to show-->
+            <ImageButton
+                android:id="@+id/trash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/holo_red_light"
+                android:scaleType="center"
+                android:src="@drawable/ic_trash" />
+        </LinearLayout>
+        <!-- Bottom View End-->
+
+        <!-- Surface View Start -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:gravity="left|center_vertical">
+            <!--What you want to show in SurfaceView-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_margin="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/item_mac_tv"
+                    style="@style/ListItemTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/list_item_icon_margin_left"
+                    app:layout_constraintBottom_toBottomOf="@+id/item_icon_img"
+                    app:layout_constraintStart_toEndOf="@+id/item_icon_img"
+                    app:layout_constraintTop_toTopOf="@+id/item_icon_img"
+                    tools:text="mac" />
+
+                <TextView
+                    android:id="@+id/item_ip_tv"
+                    style="@style/ListItemCommitTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@+id/item_mac_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/item_mac_tv"
+                    tools:text="美的空调" />
+
+                <ImageView
+                    android:id="@+id/item_icon_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/list_item_icon_margin_left"
+                    android:src="@drawable/ic_cpu"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/edit_ib"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#ffffff"
+                    android:layout_marginRight="@dimen/list_item_right_end_margin"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/ic_pen" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+        <!-- Surface View End -->
+    </com.daimajia.swipe.SwipeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

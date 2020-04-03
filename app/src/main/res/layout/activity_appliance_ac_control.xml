@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/activityBackground"
+    tools:context=".ui.appliances.ACControlActivity">
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_marginBottom="1dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/ac_control_ll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ac_state_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_vertical_margin"
+        app:layout_constraintBottom_toTopOf="@+id/view3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView_temperature_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="℃"
+            android:textColor="@android:color/black"
+            android:textSize="21sp"
+            android:textStyle="normal"
+            app:layout_constraintStart_toEndOf="@+id/ac_temperature_tv"
+            app:layout_constraintTop_toTopOf="@+id/ac_temperature_tv" />
+
+        <TextView
+            android:id="@+id/ac_temperature_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="20"
+            android:textColor="@android:color/black"
+            android:textSize="112sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.462"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ac_mode_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:baselineAlignBottom="false"
+            android:src="@drawable/ic_cool"
+            app:layout_constraintBottom_toBottomOf="@+id/ac_temperature_tv"
+            app:layout_constraintStart_toEndOf="@+id/ac_temperature_tv" />
+
+        <TextView
+            android:id="@+id/ac_mode_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/black"
+            android:textSize="21sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ac_mode_img"
+            app:layout_constraintStart_toEndOf="@+id/ac_mode_img"
+            app:layout_constraintTop_toTopOf="@+id/ac_mode_img" />
+
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/gridLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            app:columnCount="3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ac_temperature_tv">
+
+
+            <TextView
+                style="@style/AcStatusTextView"
+                android:text="@string/fan_speed"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_row="0" />
+
+            <TextView
+                style="@style/AcStatusTextView"
+                android:text="@string/fan_direction"
+                app:layout_column="1"
+                app:layout_columnWeight="1"
+                app:layout_row="0" />
+
+            <TextView
+                style="@style/AcStatusTextView"
+                android:text="@string/swing"
+                app:layout_column="2"
+                app:layout_columnWeight="1"
+                app:layout_row="0" />
+
+            <TextView
+                android:id="@+id/ac_speed_tv"
+                style="@style/AcStatusTextView"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                tools:text="@string/fan_speed_high" />
+
+            <TextView
+                android:id="@+id/ac_fan_direction_tv"
+                style="@style/AcStatusTextView"
+                app:layout_column="1"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                tools:text="@string/fan_direction_up" />
+
+            <TextView
+                android:id="@+id/ac_swing_tv"
+                style="@style/AcStatusTextView"
+                app:layout_column="2"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                tools:text="关闭" />
+
+        </androidx.gridlayout.widget.GridLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/ac_control_ll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.gridlayout.widget.GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:columnCount="2">
+
+            <ImageButton
+                android:id="@+id/ac_power_ctrl_btn"
+                style="@style/AcCtrlButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/ac_button_selected_background"
+                android:padding="0dp"
+                android:src="@drawable/ic_power"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowWeight="1" />
+
+            <Button
+                android:id="@+id/ac_mode_ctrl_btn"
+                style="@style/AcCtrlButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/ac_button_selected_background"
+                android:text="@string/ac_mode_ctrl_btn"
+                app:layout_column="1"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowWeight="1" />
+        </androidx.gridlayout.widget.GridLayout>
+
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/ac_control_gl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:columnCount="3">
+
+            <Button
+                android:id="@+id/ac_fan_speed_ctrl_btn"
+                style="@style/AcCtrlButton"
+                android:text="@string/fan_speed"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowWeight="0" />
+
+            <Button
+                android:id="@+id/ac_fan_direction_ctrl_btn"
+                style="@style/AcCtrlButton"
+                android:text="@string/fan_direction"
+                app:layout_column="1"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowWeight="0" />
+
+            <Button
+                android:id="@+id/ac_fan_swing_ctrl_btn"
+                style="@style/AcCtrlButton"
+                android:text="@string/swing"
+                app:layout_column="2"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowWeight="0" />
+
+            <Button
+                android:id="@+id/ac_temperature_subtract_ctrl_btn"
+                style="@style/AcCtrlButton"
+                android:text="@string/temperature_subtract"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowWeight="0" />
+
+            <TextView
+                android:id="@+id/ac_temperature_btn"
+                style="@style/AcCtrlButton"
+                android:enabled="false"
+                android:text="@string/temperature"
+                app:layout_column="1"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowWeight="0" />
+
+            <Button
+                android:id="@+id/ac_temperature_add_ctrl_btn"
+                style="@style/AcCtrlButton"
+                android:text="@string/temperature_add"
+                app:layout_column="2"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowWeight="0" />
+
+            <Button
+                android:id="@+id/ac_timer_set_btn"
+                style="@style/AcCtrlButton"
+                android:text="@string/ac_set_timer"
+                android:enabled="false"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_row="2" />
+
+            <Button
+                android:id="@+id/ac_sleep_set_btn"
+                style="@style/AcCtrlButton"
+                android:text="@string/ac_set_sleep"
+                android:enabled="false"
+                app:layout_column="1"
+                app:layout_columnWeight="1"
+                app:layout_row="2" />
+
+            <Button
+                android:id="@+id/ac_options_btn"
+                style="@style/AcCtrlButton"
+                android:text="@string/ac_options"
+                app:layout_column="2"
+                app:layout_columnWeight="1"
+                app:layout_row="2" />
+
+        </androidx.gridlayout.widget.GridLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ac_parse_cl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/ac_parse_previous_btn"
+                style="@style/AcCtrlButton"
+                android:layout_width="0dp"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:paddingVertical="0dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2"
+                android:text="@string/ac_parse_previous" />
+
+            <Button
+                android:id="@+id/ac_parse_save_btn"
+                style="@style/AcCtrlButton"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:paddingHorizontal="@dimen/list_item_padding_horizontal"
+                android:paddingVertical="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ac_parse_next_btn"
+                app:layout_constraintStart_toEndOf="@+id/ac_parse_previous_btn"
+                android:text="@string/ac_parse_save" />
+
+            <Button
+                android:id="@+id/ac_parse_next_btn"
+                style="@style/AcCtrlButton"
+                android:layout_width="0dp"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2"
+                android:text="@string/ac_parse_next" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ac_parse_hint"
+                app:layout_constraintBottom_toTopOf="@+id/ac_parse_save_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/ac_parse_index_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/list_item_left_margin"
+                android:layout_marginTop="@dimen/list_item_left_margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/ac_control_pb"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

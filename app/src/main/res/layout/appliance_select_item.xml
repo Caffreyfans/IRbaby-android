@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/item_ip_tv"
+        style="@style/ListItemTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_item_left_start_margin"
+        android:paddingTop="@dimen/list_item_padding_horizontal"
+        android:paddingBottom="@dimen/list_item_padding_horizontal"
+        app:layout_constraintStart_toEndOf="@+id/item_icon_img"
+        app:layout_constraintTop_toTopOf="@+id/item_icon_img"
+        tools:text="美的空调" />
+</LinearLayout>

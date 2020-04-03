@@ -1,0 +1,29 @@
+apply plugin: 'com.android.library'
+
+android {
+
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "0.1.2"
+    }
+    buildTypes {
+
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable = false
+            jniDebuggable = false
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    api files('libs/gson-2.8.0.jar')
+    api files('libs/okhttp-3.7.0.jar')
+    api files('libs/okio-1.12.0.jar')
+}

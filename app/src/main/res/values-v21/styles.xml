@@ -1,0 +1,53 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ListItemTextStyle">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:fontFamily">roboto mono</item>
+    </style>
+
+    <style name="ListItemCommitTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:fontFamily">roboto mono</item>
+    </style>
+
+    <style name="AcCtrlButton" parent="android:Widget.Holo.Button.Borderless">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">0</item>
+        <item name="android:layout_margin">1dp</item>
+        <item name="android:paddingTop">30dp</item>
+        <item name="android:paddingBottom">30dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/ac_button_selected_background</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="AcStatusTextView" parent="android:Widget.TextView">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_columnWeight">1</item>
+    </style>
+</resources>
