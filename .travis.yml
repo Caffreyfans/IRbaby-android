@@ -17,7 +17,7 @@ deploy:
   provider: releases
   api_key: "$TOKEN"
   file:
-    - app/build/outputs/apk/debug/*.apk
+    - app/build/outputs/apk/*.apk
   skip_cleanup: true
   on:
     tags: true
