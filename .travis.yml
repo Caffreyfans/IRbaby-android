@@ -12,7 +12,8 @@ before_install:
 
 script:
   - ./gradlew assembleDebug
-
+  - ls ./app/build/outputs/apk
+  - ls ./app/build/outputs/apk/debug
 deploy:
   provider: releases
   api_key: "$TOKEN"
