@@ -1,8 +1,8 @@
 language: android
 android:
   compenents:
-    - build-tools-29.0.3
-    - android-29
+    - build-tools-28.0.3
+    - android-28
     - extra-android-m2repository
     - extra-android-support
 
