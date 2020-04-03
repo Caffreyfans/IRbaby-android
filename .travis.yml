@@ -1,0 +1,20 @@
+language: android
+android:
+  compenents:
+    - build-tools-29.0.3
+    - android-29
+    - extra-android-m2repository
+    - extra-android-support
+
+script:
+  - ./gradelew assembleDebug
+
+deploy:
+  provider: releases
+  api_key: "$TOKEN"
+  file:
+    - app/build/outputs/apk/debug/*.apk
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true

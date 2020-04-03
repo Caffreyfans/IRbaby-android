@@ -20,13 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepattributes *Annotation*
--keep class sun.misc.Unsafe { *; }
--keep class com.idea.fifaalarmclock.entity.***
--keep class com.google.gson.stream.** { *; }
-
-
--dontwarn okhttp3.logging.**
--keep class okhttp3.internal.**{*;}
--dontwarn okio.**
 
