@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import top.caffreyfans.irbaby.R;
 import top.caffreyfans.irbaby.adapter.DeviceAdapter;
@@ -35,6 +38,8 @@ public class DeviceFragment extends Fragment implements Observer {
     private List<DeviceInfo> mDeviceInfos = new ArrayList<>();
     private DeviceInfo mDeviceInfo;
     private Context mContext;
+    private Timer mTimer;
+    private String mLocalIP;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -42,8 +47,32 @@ public class DeviceFragment extends Fragment implements Observer {
         mContext = getContext();
         mListView = root.findViewById(R.id.device_lv);
         UdpNotifyManager.getUdpNotifyManager().addObserver(this);
-        discoveryDevice();
+        mLocalIP = getLocalIP();
+        mTimer = new Timer();
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                discoveryDevice();
+            }
+        };
+        if (mTimer == null) {
+            mTimer = new Timer();
+        }
+        mTimer.schedule(timerTask, 0, 5000);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mTimer.cancel();
+        mTimer.purge();
+        mTimer = null;
     }
 
     private void discoveryDevice() {
@@ -51,7 +80,7 @@ public class DeviceFragment extends Fragment implements Observer {
         JSONObject params = new JSONObject();
         try {
             msg.put("cmd", "discovery");
-            params.put("ip", getLocalIP());
+            params.put("ip", mLocalIP);
             msg.put("params", params);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -111,11 +140,21 @@ public class DeviceFragment extends Fragment implements Observer {
 
         switch (code) {
             case UdpNotifyManager.DISCOVERY:
-                if (!mDeviceInfos.contains(mDeviceInfo)) {
+                boolean flag = true;
+                for (DeviceInfo deviceInfo : mDeviceInfos) {
+                    if (deviceInfo != null && deviceInfo.getMac().equals(mDeviceInfo.getMac())) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
                     mDeviceInfos.add(mDeviceInfo);
                     mDeviceAdapter = new DeviceAdapter(mContext, mDeviceInfos, true);
                     mListView.setAdapter(mDeviceAdapter);
                 }
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + code);
         }
     }
 }
