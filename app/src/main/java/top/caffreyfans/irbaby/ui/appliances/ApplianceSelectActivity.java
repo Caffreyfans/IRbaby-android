@@ -72,10 +72,14 @@ public class ApplianceSelectActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        new FetchData().execute();
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        new FetchData().execute();
+    }
 
     private class FetchData extends AsyncTask<Void, Void, List<String>> {
 
@@ -117,10 +121,10 @@ public class ApplianceSelectActivity extends AppCompatActivity {
             super.onPostExecute(stringList);
             mProgressBar.setVisibility(View.INVISIBLE);
             mListView.setVisibility(View.VISIBLE);
-
             AppliancesSelectAdapter appliancesSelectAdapter = new AppliancesSelectAdapter(mContext, stringList);
             mListView.setAdapter(appliancesSelectAdapter);
 
+            Log.d(TAG, "onPostExecute: " + stringList.toString());
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override

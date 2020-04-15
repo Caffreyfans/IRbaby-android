@@ -1,7 +1,10 @@
 package top.caffreyfans.irbaby;
 
+import android.util.Log;
+
 import com.activeandroid.ActiveAndroid;
 import net.irext.webapi.WebAPIs;
+import net.irext.webapi.utils.PackageUtils;
 
 import org.litepal.LitePal;
 
@@ -33,6 +36,8 @@ public class IRApplication extends com.activeandroid.app.Application {
         }.start();
 
         new UdpReceiveThread().start();
+
+        Log.d(TAG, "onCreate: " + PackageUtils.getCertificateSHA1Fingerprint(this));
     }
 }
 

@@ -176,7 +176,6 @@ public class WebAPIs {
         listCategoriesRequest.setCount(mCount);
         String bodyJson = listCategoriesRequest.toJson();
 
-        Log.d(TAG, "listCategories: " + bodyJson);
 
         try {
             String response = postToServer(listCategoriesURL, bodyJson);
@@ -311,7 +310,6 @@ public class WebAPIs {
 
         try {
             String response = postToServer(listIndexesURL, bodyJson);
-            Log.d(TAG, "listRemoteIndexes: " + response);
             IndexesResponse indexesResponse = new Gson().fromJson(response, IndexesResponse.class);
 
             if (indexesResponse.getStatus().getCode() == Constants.ERROR_CODE_SUCCESS) {

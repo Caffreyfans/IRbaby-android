@@ -12,8 +12,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.appliances.ExportActivity"></activity>
+        <activity android:name=".ui.appliances.ExportActivity" />
         <activity android:name=".ui.devices.DeviceSettingsActivity" />
         <activity android:name=".ui.appliances.ApplianceSelectActivity" />
         <activity android:name=".ui.appliances.ACControlActivity" />
@@ -31,10 +32,10 @@
 
         <meta-data
             android:name="irext_app_key"
-            android:value="d49811846c8ec6404a0bfedffe35100c" />
+            android:value="26a7303fc1ee622d751b51ea2a1aaee9" />
         <meta-data
             android:name="irext_app_secret"
-            android:value="42853beac09b0d40b2b0f702011f23e6" />
+            android:value="0140b26151901859539c794289543a12" />
     </application>
 
 </manifest>
