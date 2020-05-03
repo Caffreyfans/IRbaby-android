@@ -58,10 +58,10 @@ public class ExportActivity extends AppCompatActivity {
                 "      - \"medium\"\n" +
                 "      - \"low\"\n" +
                 "      - \"auto\"\n" +
-                String.format("    mode_command_topic: \"/IRbaby/%s/%s/mode\"\n", mac, file) +
-                String.format("    temperature_command_topic: \"/IRbaby/%s/%s/temperature\"\n", mac, file) +
-                String.format("    fan_mode_command_topic: \"/IRbaby/%s/%s/fan\"\n", mac, file) +
-                String.format("    swing_mode_command_topic: \"/IRbaby/%s/%s/swing\"\n", mac, file) +
+                String.format("    mode_command_topic: \"/IRbaby/%s/set/%s/mode\"\n", mac, file) +
+                String.format("    temperature_command_topic: \"/IRbaby/%s/set/%s/temperature\"\n", mac, file) +
+                String.format("    fan_mode_command_topic: \"/IRbaby/%s/set/%s/fan\"\n", mac, file) +
+                String.format("    swing_mode_command_topic: \"/IRbaby/%s/set/%s/swing\"\n", mac, file) +
                 "    precision: 1.0");
         mqttTV.setText(output);
     }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,11 +17,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import net.irext.webapi.bean.ACStatus;
 import net.irext.webapi.model.RemoteIndex;
 import net.irext.webapi.utils.Constants.*;
+
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.LitePal;
+
 import java.util.List;
 import top.caffreyfans.irbaby.IRApplication;
 import top.caffreyfans.irbaby.MainActivity;
@@ -28,6 +42,7 @@ import top.caffreyfans.irbaby.R;
 import top.caffreyfans.irbaby.helper.ApplianceContract;
 import top.caffreyfans.irbaby.helper.UdpSendThread;
 import top.caffreyfans.irbaby.model.ApplianceInfo;
+import top.caffreyfans.irbaby.model.DeviceInfo;
 
 
 public class ACControlActivity extends AppCompatActivity implements View.OnClickListener {
@@ -49,6 +64,72 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
     private boolean mIsParse = false;
     private ACStatus mACStatus;
     private ApplianceInfo mApplianceInfo;
+    private DeviceInfo mDeviceInfo;
+
+    /* MQTT */
+    private MqttAndroidClient mClient = null;
+    private IMqttActionListener mIMqttActionListener = new IMqttActionListener() {
+
+        @Override
+        public void onSuccess(IMqttToken asyncActionToken) {
+            String topic = "/IRbaby/" + mDeviceInfo.getMac()
+                    + "/set/" + mApplianceInfo.getFile() + "/#";
+            try {
+                mClient.subscribe(topic, 0);
+                Log.d(TAG, "onSuccess: subscribe " + topic);
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+
+        }
+    };
+
+    private MqttCallbackExtended mMqttCallback = new MqttCallbackExtended() {
+        @Override
+        public void connectComplete(boolean reconnect, String serverURI) {
+
+        }
+
+        @Override
+        public void connectionLost(Throwable cause) {
+
+        }
+
+        @Override
+        public void messageArrived(String topic, MqttMessage message) throws Exception {
+            Log.d(TAG, "messageArrived: " + topic + " " + message);
+            getStatusFromMqtt(topic, message);
+        }
+
+        @Override
+        public void deliveryComplete(IMqttDeliveryToken token) {
+
+        }
+    };
+
+    private void mqttInit() {
+        try {
+            String host = "tcp://";
+            host += mDeviceInfo.getMqttAddress() + ":";
+            host += mDeviceInfo.getMqttPort();
+            Log.d(TAG, "mqttInit: " + mDeviceInfo.getMqttAddress());
+            mClient = new MqttAndroidClient(this, host, "android");
+            MqttConnectOptions options = new MqttConnectOptions();
+            options.setUserName(mDeviceInfo.getMqttUser());
+            options.setPassword(mDeviceInfo.getMqttPassword().toCharArray());
+            options.setConnectionTimeout(20);
+            options.setAutomaticReconnect(true);
+            options.setKeepAliveInterval(20);
+            mClient.setCallback(mMqttCallback);
+            mClient.connect(options, null, mIMqttActionListener);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,14 +169,34 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
         if (intent.hasExtra(ApplianceContract.Control.APPLIANCE_INFO)) {
             mApplianceInfo = (ApplianceInfo) intent.getSerializableExtra(ApplianceContract.Control.APPLIANCE_INFO);
             this.setTitle(mApplianceInfo.getName());
+            List<DeviceInfo> deviceInfos = LitePal.findAll(DeviceInfo.class);
+            for (DeviceInfo deviceInfo : deviceInfos) {
+                if (deviceInfo.getMac().equals(mApplianceInfo.getMac())) {
+                    mDeviceInfo = deviceInfo;
+                }
+            }
         }
 
         if (intent.hasExtra(ApplianceContract.Control.IS_PARSE)) {
             mIsParse = intent.getBooleanExtra(ApplianceContract.Control.IS_PARSE, false);
             new FetchIndexData().execute();
+        } else {
+            mqttInit();
         }
+
         initACStatus();
         refreshAcStatusUI();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mClient != null) {
+            mClient.unregisterResources();
+            mClient.close();
+            mClient = null;
+        }
     }
 
     @Override
@@ -104,6 +205,7 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
             case R.id.ac_power_ctrl_btn:
                 mACStatus.acPower = ACPower.values()[(mACStatus.acPower.ordinal() + 1) % ACPower.values().length] ;
                 break;
+
 
             case R.id.ac_mode_ctrl_btn:
                 mACStatus.acMode = ACMode.values()[(mACStatus.acMode.ordinal() + 1) % ACMode.values().length];
@@ -157,11 +259,17 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
                 }
                 break;
         }
-        sendUdp();
+        View parent = (View) v.getParent();
+        if (parent.getId() != R.id.ac_parse_cl) {
+            if ((mClient != null) && mClient.isConnected()) {
+                JSONObject status = statusToJSON(mACStatus);
+                sendMqtt("set", status.toString());
+            } else {
+                sendUdp();
+            }
+        }
         refreshAcStatusUI();
     }
-
-
 
     private void initACStatus() {
         mACStatus.acPower = ACPower.POWER_ON;
@@ -248,13 +356,28 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
         finish();
     }
 
+    private void getStatusFromUdp() {
+
+    }
+
+    private void getStatusFromMqtt(String topic, MqttMessage message) {
+        if (topic.endsWith("state")) {
+            try {
+                JSONObject jsonObject = new JSONObject(message.toString());
+                mACStatus = jsonToStatus(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void sendUdp() {
         try {
             JSONObject send = new JSONObject();
             send.put("cmd", "send");
             JSONObject params = new JSONObject();
             params.put("file", mApplianceInfo.getFile());
-            JSONObject status = coverType(mACStatus);
+            JSONObject status = statusToJSON(mACStatus);
             params.put("status", status);
             send.put("params", params);
 
@@ -265,11 +388,23 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void sendMqtt() {
-
+    private void sendMqtt(String cmd, String payload) {
+        String topic = "/IRbaby/" + mApplianceInfo.getMac()
+                + "/set/" + mApplianceInfo.getFile() + "/" + cmd;
+        MqttMessage mqttMessage = new MqttMessage();
+        mqttMessage.setQos(0);
+        mqttMessage.setRetained(false);
+        mqttMessage.setPayload(payload.getBytes());
+        if (mClient != null && mClient.isConnected()) {
+            try {
+                mClient.publish(topic, mqttMessage);
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    private JSONObject coverType(ACStatus acStatus) {
+    private JSONObject statusToJSON(ACStatus acStatus) {
         JSONObject object = new JSONObject();
         try {
             object.put("power", acStatus.acPower.getValue());
@@ -282,6 +417,21 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
             e.printStackTrace();
         }
         return object;
+    }
+
+    private ACStatus jsonToStatus(JSONObject jsonObject) {
+        ACStatus acStatus = new ACStatus();
+        try {
+            acStatus.acPower = ACPower.values()[jsonObject.getInt("power")];
+            acStatus.acTemp = ACTemperature.values()[jsonObject.getInt("temperature")];
+            acStatus.acMode = ACMode.values()[jsonObject.getInt("mode")];
+            acStatus.acSwing = ACSwing.values()[jsonObject.getInt("swing")];
+            acStatus.acWindDir = ACWindDirection.values()[jsonObject.getInt("direction")];
+            acStatus.acWindSpeed = ACWindSpeed.values()[jsonObject.getInt("speed")];
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return acStatus;
     }
 
     @Override

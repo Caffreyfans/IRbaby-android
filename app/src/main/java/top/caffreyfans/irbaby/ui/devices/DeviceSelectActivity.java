@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ import top.caffreyfans.irbaby.model.DeviceInfo;
 
 public class DeviceSelectActivity  extends AppCompatActivity implements Observer {
 
+    private final static String TAG = DeviceSelectActivity.class.getSimpleName();
     private ListView mListView;
     private List<DeviceInfo> mDeviceInfos;
     private DeviceInfo mDeviceInfo;
@@ -85,11 +88,25 @@ public class DeviceSelectActivity  extends AppCompatActivity implements Observer
 
         switch (code) {
             case UdpNotifyManager.DISCOVERY:
-                if (!mDeviceInfos.contains(mDeviceInfo)) {
-                    mDeviceInfos.add(mDeviceInfo);
-                    mDeviceAdapter= new DeviceAdapter(this, mDeviceInfos, false);
-                    mListView.setAdapter(mDeviceAdapter);
+                List<DeviceInfo> deviceInfos = LitePal.where("mac = ?", mDeviceInfo.getMac()).find(DeviceInfo.class);
+                if (deviceInfos.size() > 0) {
+                    DeviceInfo origin = deviceInfos.get(0);
+                    origin.setMqttAddress(mDeviceInfo.getMqttAddress());
+                    origin.setMqttPassword(mDeviceInfo.getMqttPassword());
+                    origin.setMqttUser(mDeviceInfo.getMqttUser());
+                    origin.setMqttPort(mDeviceInfo.getMqttPort());
+                    origin.setIp(mDeviceInfo.getIp());
+                    origin.setIrReceivePin(mDeviceInfo.getIrReceivePin());
+                    origin.setIrSendPin(mDeviceInfo.getIrSendPin());
+                    origin.setVersion(mDeviceInfo.getVersion());
+                    origin.save();
+                } else {
+                    mDeviceInfo.save();
                 }
+                List<DeviceInfo> deviceInfos1 = LitePal.findAll(DeviceInfo.class);
+                mDeviceAdapter = new DeviceAdapter(mContext, deviceInfos1, false);
+                mListView.setAdapter(mDeviceAdapter);
+                break;
         }
     }
 

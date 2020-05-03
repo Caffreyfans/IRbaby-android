@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,11 +128,14 @@ public class DeviceFragment extends Fragment implements Observer {
                 }
                 if (jsonObject.getJSONObject("params").has("send_pin")) {
                     mDeviceInfo.setIrSendPin(jsonObject.getJSONObject("params")
-                            .getString("send_pin"));
+                            .getInt("send_pin"));
                 }
                 if (jsonObject.getJSONObject("params").has("receive_pin")) {
                     mDeviceInfo.setIrReceivePin(jsonObject.getJSONObject("params")
-                            .getString("receive_pin"));
+                            .getInt("receive_pin"));
+                }
+                if (jsonObject.getJSONObject("params").has("version")) {
+                    mDeviceInfo.setVersion(jsonObject.getJSONObject("params").getString("version"));
                 }
             }
         } catch (JSONException e) {
@@ -140,18 +144,24 @@ public class DeviceFragment extends Fragment implements Observer {
 
         switch (code) {
             case UdpNotifyManager.DISCOVERY:
-                boolean flag = true;
-                for (DeviceInfo deviceInfo : mDeviceInfos) {
-                    if (deviceInfo != null && deviceInfo.getMac().equals(mDeviceInfo.getMac())) {
-                        flag = false;
-                        break;
-                    }
+                List<DeviceInfo> deviceInfos = LitePal.where("mac = ?", mDeviceInfo.getMac()).find(DeviceInfo.class);
+                if (deviceInfos.size() > 0) {
+                    DeviceInfo origin = deviceInfos.get(0);
+                    origin.setMqttAddress(mDeviceInfo.getMqttAddress());
+                    origin.setMqttPassword(mDeviceInfo.getMqttPassword());
+                    origin.setMqttUser(mDeviceInfo.getMqttUser());
+                    origin.setMqttPort(mDeviceInfo.getMqttPort());
+                    origin.setIp(mDeviceInfo.getIp());
+                    origin.setIrReceivePin(mDeviceInfo.getIrReceivePin());
+                    origin.setIrSendPin(mDeviceInfo.getIrSendPin());
+                    origin.setVersion(mDeviceInfo.getVersion());
+                    origin.save();
+                } else {
+                    mDeviceInfo.save();
                 }
-                if (flag) {
-                    mDeviceInfos.add(mDeviceInfo);
-                    mDeviceAdapter = new DeviceAdapter(mContext, mDeviceInfos, true);
-                    mListView.setAdapter(mDeviceAdapter);
-                }
+                List<DeviceInfo> deviceInfos1 = LitePal.findAll(DeviceInfo.class);
+                mDeviceAdapter = new DeviceAdapter(mContext, deviceInfos1, true);
+                mListView.setAdapter(mDeviceAdapter);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + code);

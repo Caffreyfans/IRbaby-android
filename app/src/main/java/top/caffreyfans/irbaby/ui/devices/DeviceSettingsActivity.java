@@ -107,8 +107,8 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
         mPort.setText(String.valueOf(mDeviceInfo.getMqttPort()));
         mUser.setText(mDeviceInfo.getMqttUser());
         mPassword.setText(mDeviceInfo.getMqttPassword());
-        mSendPin.setText(mDeviceInfo.getIrSendPin());
-        mReceivePin.setText(mDeviceInfo.getIrReceivePin());
+        mSendPin.setText(String.valueOf(mDeviceInfo.getIrSendPin()));
+        mReceivePin.setText(String.valueOf(mDeviceInfo.getIrReceivePin()));
     }
 
     @Override

@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         /* main activity handler */
         handler = new Handler();
 
-        SQLiteDatabase db = LitePal.getDatabase();
+        LitePal.getDatabase();
     }
 
     @Override

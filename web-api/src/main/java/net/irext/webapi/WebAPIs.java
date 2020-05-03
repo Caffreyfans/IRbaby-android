@@ -136,7 +136,7 @@ public class WebAPIs {
 
             appSignInRequest.setAppKey(appKey);
             appSignInRequest.setAppSecret(appSecret);
-            appSignInRequest.setAppType(0);
+            appSignInRequest.setAppType(2);
 
 
 
@@ -203,11 +203,8 @@ public class WebAPIs {
         String bodyJson = listBrandsRequest.toJson();
         try {
             String response = postToServer(listBrandsURL, bodyJson);
-            Log.d(TAG, "listBrands: bodyJson = " + bodyJson);
-            Log.d(TAG, "listBrands: response = " + response);
             BrandsResponse brandsResponse = new Gson().fromJson(response, BrandsResponse.class);
             if (brandsResponse.getStatus().getCode() == Constants.ERROR_CODE_SUCCESS) {
-                Log.d(TAG, "listBrands: brandsResponse.getEntity().size() = " + brandsResponse.getEntity().size());
                 return brandsResponse.getEntity();
             }
         } catch (Exception e) {

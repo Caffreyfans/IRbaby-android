@@ -123,8 +123,6 @@ public class ApplianceSelectActivity extends AppCompatActivity {
             mListView.setVisibility(View.VISIBLE);
             AppliancesSelectAdapter appliancesSelectAdapter = new AppliancesSelectAdapter(mContext, stringList);
             mListView.setAdapter(appliancesSelectAdapter);
-
-            Log.d(TAG, "onPostExecute: " + stringList.toString());
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override

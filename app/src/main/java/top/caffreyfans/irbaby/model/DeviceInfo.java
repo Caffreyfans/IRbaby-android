@@ -10,14 +10,13 @@ public class DeviceInfo extends LitePalSupport implements Serializable {
     private int id;
     private String version;
     private String ip;
-    @Column(unique = true, defaultValue = "unkown")
     private String mac;
     private String mqttAddress;
     private int mqttPort;
     private String mqttUser;
     private String mqttPassword;
-    private String irSendPin;
-    private String irReceivePin;
+    private int irSendPin;
+    private int irReceivePin;
 
     public int getId() {
         return id;
@@ -83,19 +82,19 @@ public class DeviceInfo extends LitePalSupport implements Serializable {
         this.mqttPassword = mqttPassword;
     }
 
-    public String getIrSendPin() {
+    public int getIrSendPin() {
         return irSendPin;
     }
 
-    public void setIrSendPin(String irSendPin) {
+    public void setIrSendPin(int irSendPin) {
         this.irSendPin = irSendPin;
     }
 
-    public String getIrReceivePin() {
+    public int getIrReceivePin() {
         return irReceivePin;
     }
 
-    public void setIrReceivePin(String irReceivePin) {
+    public void setIrReceivePin(int irReceivePin) {
         this.irReceivePin = irReceivePin;
     }
 

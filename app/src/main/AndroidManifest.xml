@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="top.caffreyfans.irbaby">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".IRApplication"
@@ -12,8 +14,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity android:name=".ui.appliances.ExportActivity" />
         <activity android:name=".ui.devices.DeviceSettingsActivity" />
         <activity android:name=".ui.appliances.ApplianceSelectActivity" />
@@ -32,10 +34,12 @@
 
         <meta-data
             android:name="irext_app_key"
-            android:value="26a7303fc1ee622d751b51ea2a1aaee9" />
+            android:value="6407d3634eccac6ad60b2e07e490433d" />
         <meta-data
             android:name="irext_app_secret"
-            android:value="0140b26151901859539c794289543a12" />
+            android:value="d6730122152c89095aedbc8067fb9b2b" />
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>
 
 </manifest>
