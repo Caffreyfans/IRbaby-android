@@ -112,22 +112,28 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
     };
 
     private void mqttInit() {
-        try {
-            String host = "tcp://";
-            host += mDeviceInfo.getMqttAddress() + ":";
-            host += mDeviceInfo.getMqttPort();
-            Log.d(TAG, "mqttInit: " + mDeviceInfo.getMqttAddress());
-            mClient = new MqttAndroidClient(this, host, "android");
-            MqttConnectOptions options = new MqttConnectOptions();
-            options.setUserName(mDeviceInfo.getMqttUser());
-            options.setPassword(mDeviceInfo.getMqttPassword().toCharArray());
-            options.setConnectionTimeout(20);
-            options.setAutomaticReconnect(true);
-            options.setKeepAliveInterval(20);
-            mClient.setCallback(mMqttCallback);
-            mClient.connect(options, null, mIMqttActionListener);
-        } catch (MqttException e) {
-            e.printStackTrace();
+        if (!mDeviceInfo.getMqttAddress().isEmpty() &&
+            !(mDeviceInfo.getMqttPort() == 0)) {
+            try {
+                String host = "tcp://";
+                host += mDeviceInfo.getMqttAddress() + ":";
+                host += mDeviceInfo.getMqttPort();
+                Log.d(TAG, "mqttInit: " + mDeviceInfo.getMqttAddress());
+                mClient = new MqttAndroidClient(this, host, "android");
+                MqttConnectOptions options = new MqttConnectOptions();
+                if (!mDeviceInfo.getMqttUser().isEmpty() &&
+                    !mDeviceInfo.getMqttPassword().isEmpty()) {
+                    options.setUserName(mDeviceInfo.getMqttUser());
+                    options.setPassword(mDeviceInfo.getMqttPassword().toCharArray());
+                }
+                options.setConnectionTimeout(20);
+                options.setAutomaticReconnect(true);
+                options.setKeepAliveInterval(20);
+                mClient.setCallback(mMqttCallback);
+                mClient.connect(options, null, mIMqttActionListener);
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
         }
     }
 

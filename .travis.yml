@@ -12,12 +12,11 @@ before_install:
 
 script:
   - ./gradlew assembleRelease
-  - cp ./app/build/outputs/apk/release/app-release.apk ./IRbaby.apk
 
 deploy:
   provider: releases
   api_key: "$TOKEN"
-  file: ./IRbaby.apk
+  file: ./app/build/outputs/apk/release/app-release.apk
   skip_cleanup: true
   on:
     tags: true
