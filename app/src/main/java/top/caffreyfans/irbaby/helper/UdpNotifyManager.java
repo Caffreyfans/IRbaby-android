@@ -3,7 +3,11 @@ package top.caffreyfans.irbaby.helper;
 import java.util.Observable;
 
 public class UdpNotifyManager extends Observable {
+    public static final int MSG_HANDLE = 0;
     public static final int DISCOVERY = 1;
+    public static final int SAVE_CONFIG = 2;
+    public static final int RECORD_RT = 3;
+    public static final int INFO_RT = 4;
 
     private static UdpNotifyManager mUdpNotifyManager;
 

@@ -2,6 +2,7 @@ package net.irext.webapi;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
@@ -12,6 +13,9 @@ import net.irext.webapi.request.*;
 import net.irext.webapi.response.*;
 import net.irext.webapi.utils.PackageUtils;
 import net.irext.webapi.WebAPICallbacks.*;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import okhttp3.*;
 
@@ -371,5 +375,19 @@ public class WebAPIs {
             }
         }
         return null;
+    }
+
+    @SuppressWarnings("unused")
+    @Deprecated
+    public int getVersion() throws IOException, JSONException {
+        String url = "https://irbaby.caffreyfans.top/latest/version.json";
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        Response response = mHttpClient.newCall(request).execute();
+
+        JSONObject jsonObject = new JSONObject(response.body().string());
+        return jsonObject.getInt("app");
     }
 }

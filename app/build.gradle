@@ -6,19 +6,19 @@ android {
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "top.caffreyfans.irbaby"
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion 29
-        versionCode 3
-        versionName "0.3"
+        versionCode 4
+        versionName "v0.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
         release {
             storeFile file("release-key/irbaby.jks")
-            keyAlias ("key0")
-            keyPassword ("as13348848836")
-            storePassword ("as13348848836")
+            keyAlias("key0")
+            keyPassword("as13348848836")
+            storePassword("as13348848836")
         }
     }
     buildTypes {
@@ -47,7 +47,8 @@ dependencies {
     implementation project(path: ':web-api')
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
     implementation 'org.litepal.android:java:3.0.0'
-    implementation 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    implementation files('libs/activeandroid-3.1.0-SNAPSHOT.jar')
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    implementation 'org.jetbrains:annotations-java5:15.0'
 }

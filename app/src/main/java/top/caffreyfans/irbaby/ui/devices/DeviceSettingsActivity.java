@@ -7,16 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
-
-import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,11 +20,13 @@ import java.util.Observable;
 import java.util.Observer;
 
 import top.caffreyfans.irbaby.R;
+import top.caffreyfans.irbaby.firmware_api.IRbabyApi;
 import top.caffreyfans.irbaby.helper.ApplianceContract;
 import top.caffreyfans.irbaby.helper.NotifyMsgEntity;
 import top.caffreyfans.irbaby.helper.UdpNotifyManager;
-import top.caffreyfans.irbaby.helper.UdpSendThread;
 import top.caffreyfans.irbaby.model.DeviceInfo;
+
+import static top.caffreyfans.irbaby.helper.UdpNotifyManager.SAVE_CONFIG;
 
 public class DeviceSettingsActivity extends AppCompatActivity implements Observer {
 
@@ -42,6 +39,7 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
     private EditText mSendPin;
     private EditText mReceivePin;
     private Context mContext;
+    private IRbabyApi mCommonApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,36 +66,20 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
         if (intent.hasExtra(ApplianceContract.DeviceSetting.DEVICE_INFO)) {
             mDeviceInfo = (DeviceInfo) intent.getSerializableExtra(ApplianceContract.DeviceSetting.DEVICE_INFO);
             this.setTitle(mDeviceInfo.getMac());
-
             fillValue();
+            mCommonApi = new IRbabyApi(this, mDeviceInfo, null);
         }
 
         Button saveBtn = (Button) findViewById(R.id.device_save_btn);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updateValue();
                 mDeviceInfo.update(mDeviceInfo.getId());
-                JSONObject sendJson = new JSONObject();
-                try {
-                    JSONObject mqtt = new JSONObject();
-                    mqtt.put("host", mAddress.getText().toString());
-                    mqtt.put("port", Integer.parseInt(mPort.getText().toString()));
-                    mqtt.put("user", mUser.getText().toString());
-                    mqtt.put("password", mPassword.getText().toString());
-
-                    JSONObject params = new JSONObject();
-                    params.put("mqtt", mqtt);
-                    params.put("send_pin", Integer.parseInt(mSendPin.getText().toString()));
-                    params.put("receive_pin", Integer.parseInt(mReceivePin.getText().toString()));
-
-                    sendJson.put("cmd", "config");
-                    sendJson.put("params", params);
-
-                    Log.d(TAG, "onClick: " + sendJson.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (mCommonApi != null) {
+                    mCommonApi.saveConfig(mDeviceInfo);
                 }
-                new UdpSendThread(mDeviceInfo.getIp(), sendJson).start();
+
             }
         });
     }
@@ -109,6 +91,15 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
         mPassword.setText(mDeviceInfo.getMqttPassword());
         mSendPin.setText(String.valueOf(mDeviceInfo.getIrSendPin()));
         mReceivePin.setText(String.valueOf(mDeviceInfo.getIrReceivePin()));
+    }
+
+    private void updateValue() {
+        mDeviceInfo.setMqttAddress(mAddress.getText().toString());
+        mDeviceInfo.setMqttPort(Integer.parseInt(mPort.getText().toString()));
+        mDeviceInfo.setMqttUser(mUser.getText().toString());
+        mDeviceInfo.setMqttPassword(mPassword.getText().toString());
+        mDeviceInfo.setIrSendPin(Integer.parseInt(mSendPin.getText().toString()));
+        mDeviceInfo.setIrReceivePin(Integer.parseInt(mReceivePin.getText().toString()));
     }
 
     @Override
@@ -123,23 +114,16 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
 
     @Override
     public void update(Observable o, Object arg) {
-        if (arg == null || !(arg instanceof NotifyMsgEntity)) {
-            return;
-        }
-
-        NotifyMsgEntity entity = (NotifyMsgEntity) arg;
-
-        int code = (int) entity.getCode();
-
-        try {
-            JSONObject object = new JSONObject((String)entity.getData());
-            Log.d(TAG, "update: " + object.toString());
-            if (object.getString("cmd").equals("return")) {
+        NotifyMsgEntity entity = (NotifyMsgEntity)arg;
+        int code = ((NotifyMsgEntity) arg).getCode();
+        if (code == SAVE_CONFIG) {
+            try {
+                JSONObject object = new JSONObject((String)entity.getData());
                 String message = object.getJSONObject("params").getString("message");
                 Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 }

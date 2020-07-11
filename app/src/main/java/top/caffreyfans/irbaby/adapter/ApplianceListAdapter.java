@@ -19,6 +19,7 @@ import top.caffreyfans.irbaby.R;
 import top.caffreyfans.irbaby.helper.ApplianceContract;
 import top.caffreyfans.irbaby.model.ApplianceInfo;
 import top.caffreyfans.irbaby.ui.appliances.ACControlActivity;
+import top.caffreyfans.irbaby.ui.appliances.DIYControlActivity;
 
 public class ApplianceListAdapter extends BaseSwipeAdapter {
     private final String TAG = ApplianceListAdapter.class.getSimpleName();
@@ -61,13 +62,29 @@ public class ApplianceListAdapter extends BaseSwipeAdapter {
             case FAN:
                 imageView.setImageResource(R.drawable.ic_fan);
                 break;
+            case DIY:
+                imageView.setImageResource(R.drawable.ic_diy);
+                break;
         }
-        SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe);
+        final SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe);
         swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ACControlActivity.class);
-                intent.putExtra(ApplianceContract.Control.APPLIANCE_INFO, (Serializable) mAppliancesInfoList.get(position));
+                int i = mAppliancesInfoList.get(position).getCategory() - 1;
+                CategoryID categoryID = CategoryID.values()[i];
+                Intent intent;
+                switch (categoryID) {
+                    case AIR_CONDITIONER:
+                        intent = new Intent(mContext, ACControlActivity.class);
+                        break;
+                    case DIY:
+                        intent = new Intent(mContext, DIYControlActivity.class);
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + categoryID);
+                }
+                intent.putExtra(ApplianceContract.Control.APPLIANCE_INFO, 
+                        (Serializable) mAppliancesInfoList.get(position));
                 mContext.startActivity(intent);
             }
         });
@@ -78,6 +95,7 @@ public class ApplianceListAdapter extends BaseSwipeAdapter {
             public void onClick(View v) {
                 LitePal.delete(ApplianceInfo.class, mAppliancesInfoList.get(position).getId());
                 mAppliancesInfoList.remove(position);
+                swipeLayout.close();
                 notifyDataSetChanged();
             }
         });

@@ -22,10 +22,10 @@ public class UdpSendThread extends Thread {
 
         DatagramSocket mSocket;
         try {
-            InetAddress broadcastAddress = InetAddress.getByName(mAddr);
+            InetAddress ip = InetAddress.getByName(mAddr);
             mSocket = new DatagramSocket();
             byte[] tmp = mSendMsg.toString().getBytes();
-            mSocket.send(new DatagramPacket(tmp, tmp.length, broadcastAddress, mPort));
+            mSocket.send(new DatagramPacket(tmp, tmp.length, ip, mPort));
             mSocket.close();
         } catch (IOException e) {
             e.printStackTrace();

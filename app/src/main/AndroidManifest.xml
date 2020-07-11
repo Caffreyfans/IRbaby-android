@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".ui.devices.DeviceInfoActivity"></activity>
+        <activity android:name=".ui.appliances.DIYControlActivity" />
+        <activity android:name=".ui.record.RecordActivity" />
         <activity android:name=".ui.appliances.ExportActivity" />
         <activity android:name=".ui.devices.DeviceSettingsActivity" />
         <activity android:name=".ui.appliances.ApplianceSelectActivity" />
@@ -38,6 +41,9 @@
         <meta-data
             android:name="irext_app_secret"
             android:value="d6730122152c89095aedbc8067fb9b2b" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>

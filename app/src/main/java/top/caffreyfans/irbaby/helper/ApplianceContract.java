@@ -6,6 +6,7 @@ public class ApplianceContract {
     public static final class Control {
         public static final String IS_PARSE = "is_parse";
         public static final String APPLIANCE_INFO = "appliance_info";
+        public static final String EXPORT_TYPE = "export_type";
     }
 
     public static final class Select {

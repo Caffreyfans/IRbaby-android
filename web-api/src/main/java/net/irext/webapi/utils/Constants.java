@@ -51,8 +51,8 @@ public class Constants {
         BSTB(11),
         CLEANING_ROBOT(12),
         AIR_CLEANER(13),
-        DYSON(14);
-
+        DYSON(14),
+        DIY(15);
         private final int id;
 
         CategoryID(int id) {

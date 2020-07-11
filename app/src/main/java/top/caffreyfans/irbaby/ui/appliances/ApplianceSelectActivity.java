@@ -74,7 +74,6 @@ public class ApplianceSelectActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();

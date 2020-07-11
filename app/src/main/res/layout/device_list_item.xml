@@ -48,6 +48,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <ImageButton
+                    android:id="@+id/info_ib"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/list_item_padding_horizontal"
+                    android:background="#ffffff"
+                    android:src="@drawable/ic_info"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.49" />
+
                 <TextView
                     android:id="@+id/item_mac_tv"
                     style="@style/ListItemTextStyle"
@@ -82,12 +95,13 @@
                     android:id="@+id/edit_ib"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/list_item_padding_horizontal"
                     android:background="#ffffff"
-                    android:layout_marginRight="@dimen/list_item_right_end_margin"
+                    android:src="@drawable/ic_pen"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:src="@drawable/ic_pen" />
+                    app:layout_constraintEnd_toStartOf="@+id/info_ib"
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>

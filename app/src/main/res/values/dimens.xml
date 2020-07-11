@@ -12,7 +12,9 @@
 
     <dimen name="list_item_padding_horizontal">16dp</dimen>
     <dimen name="list_item_padding_vertical">12dp</dimen>
+    <dimen name="list_item_padding">16dp</dimen>
 
+    <dimen name="list_item_margin">16dp</dimen>
     <dimen name="list_item_left_margin">16dp</dimen>
     <dimen name="list_item_right_margin">16dp</dimen>
     <dimen name="list_item_bottom_margin">16dp</dimen>

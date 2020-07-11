@@ -15,7 +15,7 @@
     <string name="record_ir">红外录制</string>
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="menu_about">关于</string>
 
 
     <!-- mode  -->
@@ -79,4 +79,25 @@
     <string name="ir_receive">收接引脚</string>
     <!-- Save -->
     <string name="settings_save">保存</string>
+
+    <!-- Record -->
+    <string name="dialog_title">请输入保存名（不能为中文）</string>
+    <string name="dialog_save_button">保存</string>
+    <string name="dialog_cancel_button">取消</string>
+    <string name="record_start">录制</string>
+    <string name="record_description">将遥控器对准模块，按下要学习的按钮</string>
+    <string name="record_test">测试信号</string>
+    <string name="record_save">保存信号</string>
+
+    <!-- DIY -->
+    <string name="raw_send">信号发射</string>
+
+    <!-- DeviceInfo -->
+    <string name="device_info_check">固件版本检查</string>
+
+    <!-- About -->
+    <string name="about_button_title">应用版本检查</string>
+    <string name="about_update_message">有新版本，是否更新？</string>
+    <string name="about_no_update_message">已是最新版本</string>
+    <string name="about_dialog_update">更新</string>
 </resources>

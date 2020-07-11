@@ -19,8 +19,9 @@ import top.caffreyfans.irbaby.helper.ApplianceContract;
 import top.caffreyfans.irbaby.model.ApplianceInfo;
 import top.caffreyfans.irbaby.model.DeviceInfo;
 import top.caffreyfans.irbaby.ui.appliances.ApplianceSelectActivity;
-import top.caffreyfans.irbaby.ui.devices.DeviceSelectActivity;
+import top.caffreyfans.irbaby.ui.devices.DeviceInfoActivity;
 import top.caffreyfans.irbaby.ui.devices.DeviceSettingsActivity;
+import top.caffreyfans.irbaby.ui.record.RecordActivity;
 
 public class DeviceAdapter extends BaseSwipeAdapter {
 
@@ -28,12 +29,12 @@ public class DeviceAdapter extends BaseSwipeAdapter {
     private Context mContext;
     private String mName;
     private String mIP;
-    private boolean mIsSetting;
+    private int mAction;
 
-    public DeviceAdapter(Context context, List<DeviceInfo> deviceInfos, boolean isSetting) {
+    public DeviceAdapter(Context context, List<DeviceInfo> deviceInfos, int action) {
         mDeviceInfos = deviceInfos;
         mContext = context;
-        mIsSetting = isSetting;
+        mAction = action;
     }
 
     @Override
@@ -46,32 +47,56 @@ public class DeviceAdapter extends BaseSwipeAdapter {
         View v = LayoutInflater.from(mContext).inflate(R.layout.device_list_item, null);
         SwipeLayout swipeLayout = v.findViewById(R.id.swipe);
         ImageButton imageButton = v.findViewById(R.id.edit_ib);
-        if (mIsSetting) {
-            imageButton.setVisibility(View.VISIBLE);
-            imageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, DeviceSettingsActivity.class);
-                    intent.putExtra(ApplianceContract.DeviceSetting.DEVICE_INFO, mDeviceInfos.get(position));
-                    mContext.startActivity(intent);
-                }
-            });
-
-        } else {
-            imageButton.setVisibility(View.INVISIBLE);
-            swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ApplianceInfo applianceInfo = new ApplianceInfo();
-                    applianceInfo.setIp(mDeviceInfos.get(position).getIp());
-                    applianceInfo.setMac(mDeviceInfos.get(position).getMac());
-                    Intent intent = new Intent(mContext, ApplianceSelectActivity.class);
-                    intent.putExtra(ApplianceContract.Select.TITLE, mContext.getString(R.string.select_category));
-                    intent.putExtra(ApplianceContract.Select.CONTENT_ID, Constants.ContentID.LIST_CATEGORIES);
-                    intent.putExtra(ApplianceContract.Select.APPLIANCE_INFO, applianceInfo);
-                    mContext.startActivity(intent);
-                }
-            });
+        ImageButton info_btn = v.findViewById(R.id.info_ib);
+        switch (mAction) {
+            case 1:
+                imageButton.setVisibility(View.VISIBLE);
+                imageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext, DeviceSettingsActivity.class);
+                        intent.putExtra(ApplianceContract.DeviceSetting.DEVICE_INFO, mDeviceInfos.get(position));
+                        mContext.startActivity(intent);
+                    }
+                });
+                info_btn.setVisibility(View.VISIBLE
+                );
+                info_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext, DeviceInfoActivity.class);
+                        intent.putExtra(ApplianceContract.DeviceSetting.DEVICE_INFO, mDeviceInfos.get(position));
+                        mContext.startActivity(intent);
+                    }
+                });
+                break;
+            case 2:
+                imageButton.setVisibility(View.INVISIBLE);
+                swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ApplianceInfo applianceInfo = new ApplianceInfo();
+                        applianceInfo.setIp(mDeviceInfos.get(position).getIp());
+                        applianceInfo.setMac(mDeviceInfos.get(position).getMac());
+                        Intent intent = new Intent(mContext, ApplianceSelectActivity.class);
+                        intent.putExtra(ApplianceContract.Select.TITLE, mContext.getString(R.string.select_category));
+                        intent.putExtra(ApplianceContract.Select.CONTENT_ID, Constants.ContentID.LIST_CATEGORIES);
+                        intent.putExtra(ApplianceContract.Select.APPLIANCE_INFO, applianceInfo);
+                        mContext.startActivity(intent);
+                    }
+                });
+                break;
+            case 3:
+                imageButton.setVisibility(View.INVISIBLE);
+                swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext, RecordActivity.class);
+                        intent.putExtra(ApplianceContract.DeviceSetting.DEVICE_INFO, mDeviceInfos.get(position));
+                        mContext.startActivity(intent);
+                    }
+                });
+                break;
         }
         return v;
     }

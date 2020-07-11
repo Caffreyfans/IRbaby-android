@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import net.irext.webapi.utils.Constants;
+
 import top.caffreyfans.irbaby.R;
 import top.caffreyfans.irbaby.helper.ApplianceContract;
 import top.caffreyfans.irbaby.model.ApplianceInfo;
@@ -16,6 +18,10 @@ import top.caffreyfans.irbaby.model.ApplianceInfo;
 public class ExportActivity extends AppCompatActivity {
 
     private ApplianceInfo mApplianceInfo;
+    private String MAC;
+    private String File;
+    private String Config;
+    private Constants.CategoryID categoryID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,38 +38,64 @@ public class ExportActivity extends AppCompatActivity {
 
         if (intent.hasExtra(ApplianceContract.Control.APPLIANCE_INFO)) {
             mApplianceInfo = (ApplianceInfo) intent.getSerializableExtra(ApplianceContract.Control.APPLIANCE_INFO);
+            MAC = mApplianceInfo.getMac();
+            File = mApplianceInfo.getFile();
+        }
+
+        if (intent.hasExtra(ApplianceContract.Control.EXPORT_TYPE)) {
+            categoryID = (Constants.CategoryID) intent.getSerializableExtra(ApplianceContract.Control.EXPORT_TYPE);
+            switch (categoryID) {
+                case AIR_CONDITIONER:
+                    Config = getACConfig();
+                    break;
+                case DIY:
+                    Config = getDIYConfig();
+                    break;
+                default:
+                    break;
+
+            }
         }
 
         TextView mqttTV = (TextView) findViewById(R.id.mqtt_tv);
-        String mac = mApplianceInfo.getMac();
-        String file = mApplianceInfo.getFile();
+        mqttTV.setText(Config);
+    }
+
+    private String getACConfig() {
         String output = String.format(
                 "climate:\n" +
-                "  - platform: mqtt\n" +
-                "    name: just you like!\n" +
-                "    modes:\n" +
-                "      - \"heat\"\n" +
-                "      - \"cool\"\n" +
-                "      - \"auto\"\n" +
-                "      - \"fan\"\n" +
-                "      - \"dry\"\n" +
-                "      - \"off\"\n" +
-                "    swing_modes:\n" +
-                "      - \"on\"\n" +
-                "      - \"off\"\n" +
-                "    max_temp: 30\n" +
-                "    min_temp: 16\n" +
-                "    fan_modes:\n" +
-                "      - \"high\"\n" +
-                "      - \"medium\"\n" +
-                "      - \"low\"\n" +
-                "      - \"auto\"\n" +
-                String.format("    mode_command_topic: \"/IRbaby/%s/set/%s/mode\"\n", mac, file) +
-                String.format("    temperature_command_topic: \"/IRbaby/%s/set/%s/temperature\"\n", mac, file) +
-                String.format("    fan_mode_command_topic: \"/IRbaby/%s/set/%s/fan\"\n", mac, file) +
-                String.format("    swing_mode_command_topic: \"/IRbaby/%s/set/%s/swing\"\n", mac, file) +
-                "    precision: 1.0");
-        mqttTV.setText(output);
+                        "  - platform: mqtt\n" +
+                        "    name: just you like!\n" +
+                        "    modes:\n" +
+                        "      - \"heat\"\n" +
+                        "      - \"cool\"\n" +
+                        "      - \"auto\"\n" +
+                        "      - \"fan\"\n" +
+                        "      - \"dry\"\n" +
+                        "      - \"off\"\n" +
+                        "    swing_modes:\n" +
+                        "      - \"on\"\n" +
+                        "      - \"off\"\n" +
+                        "    max_temp: 30\n" +
+                        "    min_temp: 16\n" +
+                        "    fan_modes:\n" +
+                        "      - \"high\"\n" +
+                        "      - \"medium\"\n" +
+                        "      - \"low\"\n" +
+                        "      - \"auto\"\n" +
+                        String.format("    mode_command_topic: \"/IRbaby/%s/set/%s/mode\"\n", MAC, File) +
+                        String.format("    temperature_command_topic: \"/IRbaby/%s/set/%s/temperature\"\n", MAC, File) +
+                        String.format("    fan_mode_command_topic: \"/IRbaby/%s/set/%s/fan\"\n", MAC, File) +
+                        String.format("    swing_mode_command_topic: \"/IRbaby/%s/set/%s/swing\"\n", MAC, File) +
+                        "    precision: 1.0");
+        return output;
+    }
+
+    private String getDIYConfig() {
+        String output = "switch:\n" +
+                " - platform: mqtt\n" +
+                String.format("   command_topic: \"/IRbaby/%s/set/%s/raw\"", MAC, File);
+        return output;
     }
 
     @Override

@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textUri|text" />
+            android:inputType="textUri|text|textNoSuggestions" />
 
         <TextView
             android:id="@+id/textView6"
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number" />
+            android:inputType="textNoSuggestions|number|textNoSuggestions" />
 
         <TextView
             android:id="@+id/textView7"
@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName|textNoSuggestions" />
 
         <TextView
             android:id="@+id/textView8"
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName|textNoSuggestions" />
 
         <TextView
             android:id="@+id/textView9"
@@ -96,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number" />
+            android:inputType="number|textNoSuggestions" />
 
         <TextView
             android:id="@+id/textView11"
@@ -109,7 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number" />
+            android:inputType="number|textNoSuggestions" />
 
         <Button
             android:id="@+id/device_save_btn"

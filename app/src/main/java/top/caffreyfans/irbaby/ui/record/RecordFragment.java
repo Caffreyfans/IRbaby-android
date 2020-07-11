@@ -1,19 +1,17 @@
-package top.caffreyfans.irbaby.ui.devices;
+package top.caffreyfans.irbaby.ui.record;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import org.litepal.LitePal;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -27,34 +25,25 @@ import top.caffreyfans.irbaby.helper.NotifyMsgEntity;
 import top.caffreyfans.irbaby.helper.UdpNotifyManager;
 import top.caffreyfans.irbaby.model.DeviceInfo;
 
-public class DeviceSelectActivity  extends AppCompatActivity implements Observer {
+public class RecordFragment extends Fragment implements Observer {
 
-    private final static String TAG = DeviceSelectActivity.class.getSimpleName();
+    private static final String TAG = RecordFragment.class.getSimpleName();
     private ListView mListView;
+    private DeviceAdapter mDeviceAdapter;
     private List<DeviceInfo> mDeviceInfos;
     private Context mContext;
-    private DeviceAdapter mDeviceAdapter;
     private Timer mTimer;
     private IRbabyApi mCommonApi;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_device);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        mContext = this;
-        mListView = findViewById(R.id.device_lv);
-        mDeviceInfos = new ArrayList<>();
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_device, container, false);
+        mContext = getContext();
+        mListView = root.findViewById(R.id.device_lv);
+        mCommonApi = new IRbabyApi(getContext().getApplicationContext());
         mTimer = new Timer();
-
         UdpNotifyManager.getUdpNotifyManager().addObserver(this);
-        mCommonApi = new IRbabyApi(this);
+        return root;
     }
 
     @Override
@@ -82,23 +71,12 @@ public class DeviceSelectActivity  extends AppCompatActivity implements Observer
 
     @Override
     public void update(Observable o, Object arg) {
-
-        NotifyMsgEntity entity = (NotifyMsgEntity) arg;
+        NotifyMsgEntity entity = (NotifyMsgEntity)arg;
         int code = (int)entity.getCode();
         if (code == UdpNotifyManager.DISCOVERY) {
             mDeviceInfos = LitePal.findAll(DeviceInfo.class);
-            mDeviceAdapter = new DeviceAdapter(mContext, mDeviceInfos, 2);
+            mDeviceAdapter = new DeviceAdapter(mContext, mDeviceInfos, 3);
             mListView.setAdapter(mDeviceAdapter);
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
