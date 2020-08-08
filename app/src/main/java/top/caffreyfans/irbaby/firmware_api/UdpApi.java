@@ -55,8 +55,9 @@ public class UdpApi extends Api {
                 (mIP >> 8 & 0xff), (mIP >> 16 & 0xff),
                 (0xff));
         try {
-            msg.put("cmd", "discovery");
+            msg.put("cmd", "query");
             params.put("ip", mStrIP);
+            params.put("type", "discovery");
             msg.put("params", params);
         } catch (JSONException e) {
             e.printStackTrace();

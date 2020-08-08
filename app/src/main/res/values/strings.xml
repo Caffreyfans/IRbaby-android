@@ -12,8 +12,7 @@
 
     <string name="appliances">家电控制</string>
     <string name="devices_manage">设备管理</string>
-    <string name="record_ir">红外录制</string>
-    <string name="menu_tools">Tools</string>
+    <string name="record_ir">信号录制</string>
     <string name="menu_share">Share</string>
     <string name="menu_about">关于</string>
 

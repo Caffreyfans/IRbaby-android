@@ -18,16 +18,16 @@
         tools:layout="@layout/fragment_device" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_ir_record"
         android:name="top.caffreyfans.irbaby.ui.record.RecordFragment"
         android:label="@string/record_ir"
         tools:layout="@layout/fragment_slideshow" />
 
-    <fragment
-        android:id="@+id/nav_tools"
-        android:name="top.caffreyfans.irbaby.ui.tools.ToolsFragment"
-        android:label="@string/menu_tools"
-        tools:layout="@layout/fragment_tools" />
+<!--    <fragment-->
+<!--        android:id="@+id/nav_rf_record"-->
+<!--        android:name="top.caffreyfans.irbaby.ui.rf.RFRecordFragment"-->
+<!--        android:label="@string/record_rf"-->
+<!--        tools:layout="@layout/fragment_tools" />-->
 
     <fragment
         android:id="@+id/nav_share"

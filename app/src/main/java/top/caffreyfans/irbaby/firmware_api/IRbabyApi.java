@@ -55,7 +55,7 @@ public class IRbabyApi implements Observer {
         mUdpApi.discoverDevice();
     }
 
-    public void sendIR(ACStatus acStatus) {
+    public void sendSignal(ACStatus acStatus) {
         JSONObject send = new JSONObject();
         JSONObject status = new JSONObject();
         JSONObject params = new JSONObject();
@@ -68,55 +68,66 @@ public class IRbabyApi implements Observer {
             status.put("speed", acStatus.acWindSpeed.getValue());
             params.put("status", status);
             params.put("file", mApplianceInfo.getFile());
+            params.put("signal", "IR");
+            params.put("type", "status");
+            send.put("cmd", "send");
+            send.put("params", params);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mApi.send(send);
+    }
+
+    public void sendSignal(String file, String signal, String type) {
+        JSONObject send = new JSONObject();
+        JSONObject params = new JSONObject();
+        try {
+            params.put("file", file);
+            params.put("signal", signal);
+            params.put("type", type);
             send.put("cmd", "send");
             send.put("params", params);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mApi.send(send);
+        mUdpApi.send(send);
     }
 
     public void getDeviceInfo() {
         JSONObject send = new JSONObject();
         try {
-            send.put("cmd", "info");
+            send.put("cmd", "query");
+            JSONObject params = new JSONObject();
+            params.put("type", "info");
+            send.put("params", params);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         mUdpApi.send(send);
     }
 
-    public void saveIR(String filename) {
+    public void saveSignal(String file, String signal) {
         JSONObject send = new JSONObject();
         JSONObject params = new JSONObject();
         try {
-            params.put("file", filename);
-            send.put("cmd", "save");
+            params.put("file", file);
+            params.put("signal", signal);
+            params.put("type", "save_signal");
+            send.put("cmd", "set");
             send.put("params", params);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         ApplianceInfo applianceInfo = new ApplianceInfo();
+        applianceInfo.setSignal(signal);
         applianceInfo.setMac(mDeviceInfo.getMac());
         applianceInfo.setIp(mDeviceInfo.getIp());
-        applianceInfo.setFile(filename);
-        applianceInfo.setName(filename);
+        applianceInfo.setFile(file);
+        applianceInfo.setName(file);
         applianceInfo.setCategory(Constants.CategoryID.DIY.getValue());
         applianceInfo.save();
         mApi.send(send);
-    }
-
-    public void sendIR(String filename) {
-        JSONObject send = new JSONObject();
-        JSONObject params = new JSONObject();
-        try {
-            params.put("file", filename);
-            send.put("cmd", "send");
-            send.put("params", params);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mUdpApi.send(send);
     }
 
     public void syncAppliance(String filename) {
@@ -124,7 +135,7 @@ public class IRbabyApi implements Observer {
     }
 
     public void saveConfig(DeviceInfo deviceInfo) {
-        JSONObject object = new JSONObject();
+        JSONObject send = new JSONObject();
         try {
             JSONObject mqtt = new JSONObject();
             mqtt.put("host", deviceInfo.getMqttAddress());
@@ -132,32 +143,50 @@ public class IRbabyApi implements Observer {
             mqtt.put("user", deviceInfo.getMqttUser());
             mqtt.put("password", deviceInfo.getMqttPassword());
 
+            JSONObject pin = new JSONObject();
+            pin.put("ir_send", deviceInfo.getIrSendPin());
+            pin.put("ir_receive", deviceInfo.getIrReceivePin());
+
             JSONObject params = new JSONObject();
             params.put("mqtt", mqtt);
-            params.put("send_pin", deviceInfo.getIrSendPin());
-            params.put("receive_pin", deviceInfo.getIrReceivePin());
+            params.put("type", "config");
+            params.put("pin", pin);
+            send.put("cmd", "set");
+            send.put("params", params);
 
-            object.put("cmd", "config");
-            object.put("params", params);
-
-            Log.d(TAG, "onClick: " + object.toString());
+            Log.d(TAG, "onClick: " + send.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mUdpApi.send(object);
+        mUdpApi.send(send);
     }
 
-    public void receiveIR() {
+    public void enableSignal() {
 
-        JSONObject object = new JSONObject();
+        JSONObject send = new JSONObject();
         try {
             JSONObject params = new JSONObject();
-            object.put("cmd", "record");
-            object.put("params", mUdpApi.getStrIP());
+            params.put("type", "record");
+            params.put("ip", mUdpApi.getStrIP());
+            send.put("cmd", "set");
+            send.put("params", params);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mUdpApi.send(object);
+        mUdpApi.send(send);
+    }
+
+    public void disableRecord() {
+        JSONObject send = new JSONObject();
+        try {
+            JSONObject params = new JSONObject();
+            params.put("type", "disable_record");
+            send.put("cmd", "set");
+            send.put("params", params);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mUdpApi.send(send);
     }
 
     public void free() {
@@ -167,28 +196,30 @@ public class IRbabyApi implements Observer {
     }
 
     public void updateFirmware() {
-        JSONObject object = new JSONObject();
+        JSONObject send = new JSONObject();
         try {
             String url = "http://irbaby.caffreyfans.top/latest/irbaby-4m.bin";
             JSONObject params = new JSONObject();
             params.put("url", url);
-            object.put("cmd", "update");
-            object.put("params", params);
+            params.put("type", "update");
+            send.put("cmd", "set");
+            send.put("params", params);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mUdpApi.send(object);
+        mUdpApi.send(send);
     }
 
     private void switchApi() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mContext
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
-        mApi = mMqttApi;
-        if (activeNetInfo != null &&
-            activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-            mApi = mUdpApi;
-        }
+//        ConnectivityManager connectivityManager = (ConnectivityManager) mContext
+//                .getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
+//        mApi = mMqttApi;
+//        if (activeNetInfo != null &&
+//            activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+//            mApi = mUdpApi;
+//        }
+        mApi = mUdpApi;
     }
 
     @Override

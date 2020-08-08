@@ -13,13 +13,13 @@
             android:icon="@drawable/ic_device"
             android:title="@string/devices_manage" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_ir_record"
             android:icon="@drawable/ic_record_ir"
             android:title="@string/record_ir" />
 <!--        <item-->
-<!--            android:id="@+id/nav_tools"-->
+<!--            android:id="@+id/nav_rf_record"-->
 <!--            android:icon="@drawable/ic_menu_manage"-->
-<!--            android:title="@string/menu_tools" />-->
+<!--            android:title="@string/record_rf" />-->
     </group>
 
     <item android:title="Communicate">

@@ -58,7 +58,7 @@ public class DIYControlActivity extends AppCompatActivity {
         send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIRbabyApi.sendIR(mApplianceInfo.getFile());
+                mIRbabyApi.sendSignal(mApplianceInfo.getFile(), mApplianceInfo.getSignal(), "file");
             }
         });
     }

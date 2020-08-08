@@ -67,10 +67,10 @@ public class ExportActivity extends AppCompatActivity {
                         "  - platform: mqtt\n" +
                         "    name: just you like!\n" +
                         "    modes:\n" +
+                        "      - \"auto\"\n" +
                         "      - \"heat\"\n" +
                         "      - \"cool\"\n" +
-                        "      - \"auto\"\n" +
-                        "      - \"fan\"\n" +
+                        "      - \"fan_only\"\n" +
                         "      - \"dry\"\n" +
                         "      - \"off\"\n" +
                         "    swing_modes:\n" +
@@ -79,14 +79,18 @@ public class ExportActivity extends AppCompatActivity {
                         "    max_temp: 30\n" +
                         "    min_temp: 16\n" +
                         "    fan_modes:\n" +
-                        "      - \"high\"\n" +
-                        "      - \"medium\"\n" +
-                        "      - \"low\"\n" +
                         "      - \"auto\"\n" +
-                        String.format("    mode_command_topic: \"/IRbaby/%s/set/%s/mode\"\n", MAC, File) +
-                        String.format("    temperature_command_topic: \"/IRbaby/%s/set/%s/temperature\"\n", MAC, File) +
-                        String.format("    fan_mode_command_topic: \"/IRbaby/%s/set/%s/fan\"\n", MAC, File) +
-                        String.format("    swing_mode_command_topic: \"/IRbaby/%s/set/%s/swing\"\n", MAC, File) +
+                        "      - \"low\"\n" +
+                        "      - \"medium\"\n" +
+                        "      - \"high\"\n" +
+                        String.format("    mode_command_topic: \"/IRbaby/%s/send/ir/local/%s/mode\"\n", MAC, File) +
+                        String.format("    mode_state_topic: \"/IRbaby/%s/state/%s/mode\"\n", MAC, File) +
+                        String.format("    temperature_command_topic: \"/IRbaby/%s/send/ir/%s/temperature\"\n", MAC, File) +
+                        String.format("    temperature_state_topic: \"/IRbaby/%s/state/%s/temperature\"\n", MAC, File) +
+                        String.format("    fan_mode_command_topic: \"/IRbaby/%s/send/ir/%s/fan\"\n", MAC, File) +
+                        String.format("    fan_mode_state_topic: \"/IRbaby/%s/state/%s/fan\"\n", MAC, File) +
+                        String.format("    swing_mode_command_topic: \"/IRbaby/%s/send/ir/%s/swing\"\n", MAC, File) +
+                        String.format("    swing_mode_state_topic: \"/IRbaby/%s/state/%s/swing\"\n", MAC, File) +
                         "    precision: 1.0");
         return output;
     }
@@ -94,7 +98,7 @@ public class ExportActivity extends AppCompatActivity {
     private String getDIYConfig() {
         String output = "switch:\n" +
                 " - platform: mqtt\n" +
-                String.format("   command_topic: \"/IRbaby/%s/set/%s/raw\"", MAC, File);
+                String.format("   command_topic: \"/IRbaby/%s/send/ir/file/%s/skr\"", MAC, File);
         return output;
     }
 

@@ -11,6 +11,7 @@ public class ApplianceInfo extends LitePalSupport implements Serializable {
     private String name;
     private String mac;
     private String ip;
+    private String signal;
     private int brand = -1;
     private int category = -1;
 
@@ -65,4 +66,8 @@ public class ApplianceInfo extends LitePalSupport implements Serializable {
     public void setIp(String ip) {
         this.ip = ip;
     }
+
+    public String getSignal() { return signal; }
+
+    public void setSignal(String signal) { this.signal = signal; }
 }
