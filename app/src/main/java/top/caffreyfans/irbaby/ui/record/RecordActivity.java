@@ -15,23 +15,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.litepal.LitePal;
 
 import java.util.Observable;
 import java.util.Observer;
 
-import top.caffreyfans.irbaby.MainActivity;
 import top.caffreyfans.irbaby.R;
-import top.caffreyfans.irbaby.adapter.DeviceAdapter;
 import top.caffreyfans.irbaby.firmware_api.IRbabyApi;
 import top.caffreyfans.irbaby.helper.ApplianceContract;
 import top.caffreyfans.irbaby.helper.NotifyMsgEntity;
 import top.caffreyfans.irbaby.helper.UdpNotifyManager;
-import top.caffreyfans.irbaby.helper.UdpSendThread;
 import top.caffreyfans.irbaby.model.DeviceInfo;
 
 public class RecordActivity extends AppCompatActivity
@@ -41,6 +36,7 @@ public class RecordActivity extends AppCompatActivity
 
     private EditText meditText;
     private DeviceInfo mDeviceInfo;
+    private String signalType;
     private IRbabyApi mIRbabyApi;
     private TextView mTextView;
     private Button test_btn;
@@ -64,7 +60,7 @@ public class RecordActivity extends AppCompatActivity
             this.setTitle(mDeviceInfo.getMac());
 
             mIRbabyApi = new IRbabyApi(this, mDeviceInfo, null);
-            mIRbabyApi.receiveIR();
+            mIRbabyApi.enableSignal();
         }
 
         mTextView = (TextView) findViewById(R.id.raw_tv);
@@ -74,7 +70,7 @@ public class RecordActivity extends AppCompatActivity
         test_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIRbabyApi.sendIR("test");
+                mIRbabyApi.sendSignal("test", signalType, "file");
             }
         });
 
@@ -97,7 +93,8 @@ public class RecordActivity extends AppCompatActivity
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
                        String fileName = meditText.getText().toString();
-                       mIRbabyApi.saveIR(fileName);
+                       Log.d(TAG, "onClick: signalType = " + signalType);
+                       mIRbabyApi.saveSignal(fileName, signalType);
                    }
                });
        inputDialog.setNegativeButton(getString(R.string.dialog_cancel_button),
@@ -128,10 +125,18 @@ public class RecordActivity extends AppCompatActivity
         if (code == UdpNotifyManager.RECORD_RT) {
             try {
                 jsonObject = new JSONObject(entity.getData().toString());
-                mTextView.setText(jsonObject.getString("params"));
+                mTextView.setText(jsonObject.getString ("params"));
+                signalType = jsonObject.getJSONObject("params").getString("signal");
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mIRbabyApi.disableRecord();
     }
 }

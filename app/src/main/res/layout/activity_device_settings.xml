@@ -83,33 +83,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/list_item_padding_horizontal"
-            android:text="@string/ir_title" />
+            android:text="@string/ir_title"
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/textView10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ir_send" />
+            android:text="@string/ir_send"
+            android:visibility="visible" />
 
         <EditText
             android:id="@+id/send_pin_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number|textNoSuggestions" />
+            android:inputType="number|textNoSuggestions"
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/textView11"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ir_receive" />
+            android:text="@string/ir_receive"
+            android:visibility="visible" />
 
         <EditText
             android:id="@+id/receive_pin_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number|textNoSuggestions" />
+            android:inputType="number|textNoSuggestions"
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/device_save_btn"

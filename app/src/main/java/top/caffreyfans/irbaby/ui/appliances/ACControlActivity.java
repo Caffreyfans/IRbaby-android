@@ -182,7 +182,7 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
         }
         View parent = (View) v.getParent();
         if (parent.getId() != R.id.ac_parse_cl) {
-            mIRbabyApi.sendIR(mACStatus);
+            mIRbabyApi.sendSignal(mACStatus);
         }
         refreshAcStatusUI();
     }
@@ -265,6 +265,7 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void saveAppliance() {
+        mApplianceInfo.setSignal("IR");
         mApplianceInfo.save();
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

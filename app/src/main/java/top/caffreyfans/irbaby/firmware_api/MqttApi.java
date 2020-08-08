@@ -96,9 +96,11 @@ public class MqttApi extends Api {
     }
 
     public void free() {
-        mMqttClient.unregisterResources();
-        mMqttClient.close();
-        mMqttClient = null;
+        if (mMqttClient != null) {
+            mMqttClient.unregisterResources();
+            mMqttClient.close();
+            mMqttClient = null;
+        }
     }
 
     @Override
