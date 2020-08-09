@@ -85,11 +85,11 @@ public class ExportActivity extends AppCompatActivity {
                         "      - \"high\"\n" +
                         String.format("    mode_command_topic: \"/IRbaby/%s/send/ir/local/%s/mode\"\n", MAC, File) +
                         String.format("    mode_state_topic: \"/IRbaby/%s/state/%s/mode\"\n", MAC, File) +
-                        String.format("    temperature_command_topic: \"/IRbaby/%s/send/ir/%s/temperature\"\n", MAC, File) +
+                        String.format("    temperature_command_topic: \"/IRbaby/%s/send/ir/local/%s/temperature\"\n", MAC, File) +
                         String.format("    temperature_state_topic: \"/IRbaby/%s/state/%s/temperature\"\n", MAC, File) +
-                        String.format("    fan_mode_command_topic: \"/IRbaby/%s/send/ir/%s/fan\"\n", MAC, File) +
+                        String.format("    fan_mode_command_topic: \"/IRbaby/%s/send/ir/local/%s/fan\"\n", MAC, File) +
                         String.format("    fan_mode_state_topic: \"/IRbaby/%s/state/%s/fan\"\n", MAC, File) +
-                        String.format("    swing_mode_command_topic: \"/IRbaby/%s/send/ir/%s/swing\"\n", MAC, File) +
+                        String.format("    swing_mode_command_topic: \"/IRbaby/%s/send/ir/local/%s/swing\"\n", MAC, File) +
                         String.format("    swing_mode_state_topic: \"/IRbaby/%s/state/%s/swing\"\n", MAC, File) +
                         "    precision: 1.0");
         return output;
