@@ -232,7 +232,7 @@ public class IRbabyApi implements Observer {
                 String cmd = jsonObject.getString("cmd");
                 NotifyMsgEntity msgEntity;
                 switch (cmd) {
-                    case "upload":
+                    case "query_discovery":
                         mDeviceInfo = new DeviceInfo();
                         mDeviceInfo.setIp(jsonObject.getJSONObject("params")
                                 .getString("ip"));
@@ -254,13 +254,15 @@ public class IRbabyApi implements Observer {
                                 mDeviceInfo.setMqttPassword(mqttObject.getString("password"));
                             }
                         }
-                        if (jsonObject.getJSONObject("params").has("send_pin")) {
-                            mDeviceInfo.setIrSendPin(jsonObject.getJSONObject("params")
-                                    .getInt("send_pin"));
-                        }
-                        if (jsonObject.getJSONObject("params").has("receive_pin")) {
-                            mDeviceInfo.setIrReceivePin(jsonObject.getJSONObject("params")
-                                    .getInt("receive_pin"));
+                        if (jsonObject.getJSONObject("params").has("pin")) {
+                            JSONObject pinObject = jsonObject.getJSONObject("params")
+                                    .getJSONObject("pin");
+                            if (pinObject.has("ir_send")) {
+                                mDeviceInfo.setIrSendPin(pinObject.getInt("ir_send"));
+                            }
+                            if (pinObject.has("ir_receive")) {
+                                mDeviceInfo.setIrReceivePin(pinObject.getInt("ir_receive"));
+                            }
                         }
                         if (jsonObject.getJSONObject("params").has("version")) {
                             mDeviceInfo.setVersion(jsonObject.getJSONObject("params")
