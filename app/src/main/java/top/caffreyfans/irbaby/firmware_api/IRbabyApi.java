@@ -300,7 +300,7 @@ public class IRbabyApi implements Observer {
                         UdpNotifyManager.getUdpNotifyManager().notifyChange(msgEntity);
                         break;
 
-                    case "info_rt":
+                    case "query_info":
                         msgEntity = new NotifyMsgEntity(UdpNotifyManager.INFO_RT,
                                 entity.getData());
                         UdpNotifyManager.getUdpNotifyManager().notifyChange(msgEntity);
