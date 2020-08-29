@@ -168,6 +168,7 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
 
             case R.id.ac_parse_save_btn:
                 mIsParse = false;
+                mIRbabyApi.registerDevice(mApplianceInfo.getFile(), CategoryID.AIR_CONDITIONER, true);
                 saveAppliance();
                 break;
 
