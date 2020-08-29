@@ -195,10 +195,12 @@ public class IRbabyApi implements Observer {
         }
     }
 
-    public void updateFirmware() {
+    public void updateFirmware(int flash_size) {
         JSONObject send = new JSONObject();
         try {
-            String url = "http://irbaby.caffreyfans.top/latest/irbaby-4m.bin";
+            int size = flash_size / 1024;
+            String url = String.format("http://irbaby.caffreyfans.top/latest/IRbaby%dm.bin", size);
+            Log.d(TAG, "updateFirmware: url = " + url);
             JSONObject params = new JSONObject();
             params.put("url", url);
             params.put("type", "update");
@@ -208,6 +210,22 @@ public class IRbabyApi implements Observer {
             e.printStackTrace();
         }
         mUdpApi.send(send);
+    }
+
+    public void registerDevice(String file, Constants.CategoryID device_type, boolean exist) {
+        JSONObject send = new JSONObject();
+        try {
+            JSONObject params = new JSONObject();
+            params.put("type", "device");
+            params.put("file", file);
+            params.put("device_type", device_type.getValue());
+            params.put("exist", exist);
+            send.put("cmd", "set");
+            send.put("params", params);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mApi.send(send);
     }
 
     private void switchApi() {

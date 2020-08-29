@@ -51,6 +51,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements Observer {
     private JSONObject contentJSON;
     private ListView mListView;
     private Button update_check_btn;
+    private int FlashSize;
     private List<String[]> stringList = new ArrayList<>();
 
     @Override
@@ -99,6 +100,10 @@ public class DeviceInfoActivity extends AppCompatActivity implements Observer {
                 strings[0] = key;
                 strings[1] = value;
                 stringList.add(strings);
+                if (key.equals("flash_size")) {
+                    value = value.replaceAll("KB", "");
+                    FlashSize = Integer.parseInt(value);
+                }
             }
             InfoAdapter infoAdapter = new InfoAdapter(this, stringList);
             mListView.setAdapter(infoAdapter);
@@ -122,7 +127,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements Observer {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mIRbabyApi.updateFirmware();
+                            mIRbabyApi.updateFirmware(FlashSize);
                         }
                     });
             inputDialog.setNegativeButton(getString(R.string.dialog_cancel_button),
