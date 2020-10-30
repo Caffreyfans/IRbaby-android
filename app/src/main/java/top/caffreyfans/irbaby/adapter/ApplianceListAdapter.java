@@ -16,6 +16,7 @@ import org.litepal.LitePal;
 import java.io.Serializable;
 import java.util.List;
 import top.caffreyfans.irbaby.R;
+import top.caffreyfans.irbaby.firmware_api.IRbabyApi;
 import top.caffreyfans.irbaby.helper.ApplianceContract;
 import top.caffreyfans.irbaby.model.ApplianceInfo;
 import top.caffreyfans.irbaby.ui.appliances.ACControlActivity;
@@ -94,6 +95,8 @@ public class ApplianceListAdapter extends BaseSwipeAdapter {
             @Override
             public void onClick(View v) {
                 LitePal.delete(ApplianceInfo.class, mAppliancesInfoList.get(position).getId());
+                IRbabyApi iRbabyApi = new IRbabyApi(mContext, null, mAppliancesInfoList.get(position));
+                iRbabyApi.registerDevice(mAppliancesInfoList.get(position).getFile(), CategoryID.AIR_CONDITIONER, false);
                 mAppliancesInfoList.remove(position);
                 swipeLayout.close();
                 notifyDataSetChanged();

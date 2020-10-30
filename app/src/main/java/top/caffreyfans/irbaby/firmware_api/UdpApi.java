@@ -3,19 +3,10 @@ package top.caffreyfans.irbaby.firmware_api;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.util.Log;
-
-import net.irext.webapi.bean.ACStatus;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.litepal.LitePal;
 
-import java.util.List;
-import java.util.Observable;
-
-import top.caffreyfans.irbaby.helper.NotifyMsgEntity;
-import top.caffreyfans.irbaby.helper.UdpNotifyManager;
 import top.caffreyfans.irbaby.helper.UdpSendThread;
 import top.caffreyfans.irbaby.model.ApplianceInfo;
 import top.caffreyfans.irbaby.model.DeviceInfo;
@@ -24,24 +15,25 @@ public class UdpApi extends Api {
 
     private final static String TAG = UdpApi.class.getSimpleName();
     private Context mContext;
-    private DeviceInfo mDeviceInfo;
+    private String mLocalIP;
+    private String mRemoteIP;
     private int mIP;
-    private String mStrIP;
 
-    public UdpApi(Context context, DeviceInfo deviceInfo) {
+    public UdpApi(Context context, String remoteIP) {
         mContext = context;
-        mDeviceInfo = deviceInfo;
         mIP = getLocalIP();
-        mStrIP = String.format(
+        mRemoteIP = remoteIP;
+        mLocalIP = String.format(
                 "%d.%d.%d.%d", (mIP & 0xff),
                 (mIP >> 8 & 0xff), (mIP >> 16 & 0xff),
                 (mIP >> 24 & 0xff));
     }
 
+
     public UdpApi(Context context) {
         mContext = context;
         mIP = getLocalIP();
-        mStrIP = String.format(
+        mLocalIP = String.format(
                 "%d.%d.%d.%d", (mIP & 0xff),
                 (mIP >> 8 & 0xff), (mIP >> 16 & 0xff),
                 (mIP >> 24 & 0xff));
@@ -56,7 +48,7 @@ public class UdpApi extends Api {
                 (0xff));
         try {
             msg.put("cmd", "query");
-            params.put("ip", mStrIP);
+            params.put("ip", mLocalIP);
             params.put("type", "discovery");
             msg.put("params", params);
         } catch (JSONException e) {
@@ -76,15 +68,11 @@ public class UdpApi extends Api {
     }
 
     public String getStrIP() {
-        return mStrIP;
-    }
-
-    public void receiveIR() {
-
+        return mLocalIP;
     }
 
     @Override
     void send(JSONObject msg) {
-        new UdpSendThread(mDeviceInfo.getIp(), msg).start();
+        new UdpSendThread(mRemoteIP, msg).start();
     }
 }

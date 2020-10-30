@@ -37,8 +37,12 @@ public class IRbabyApi implements Observer {
         mContext = context;
         mDeviceInfo = deviceInfo;
         mApplianceInfo = applianceInfo;
-        mUdpApi = new UdpApi(context, deviceInfo);
-        if (mApplianceInfo != null) {
+        if (deviceInfo != null) {
+            mUdpApi = new UdpApi(context, deviceInfo.getIp());
+        } else {
+            mUdpApi = new UdpApi(context, applianceInfo.getIp());
+        }
+        if (mApplianceInfo != null && deviceInfo != null) {
             mMqttApi = new MqttApi(context, deviceInfo, mApplianceInfo);
         }
         switchApi();
