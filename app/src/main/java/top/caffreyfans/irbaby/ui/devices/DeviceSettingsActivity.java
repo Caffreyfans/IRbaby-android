@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -74,12 +75,11 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateValue();
+                boolean couldSave = updateValue();
                 mDeviceInfo.update(mDeviceInfo.getId());
-                if (mCommonApi != null) {
+                if (mCommonApi != null && couldSave) {
                     mCommonApi.saveConfig(mDeviceInfo);
                 }
-
             }
         });
     }
@@ -93,13 +93,38 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
         mReceivePin.setText(String.valueOf(mDeviceInfo.getIrReceivePin()));
     }
 
-    private void updateValue() {
-        mDeviceInfo.setMqttAddress(mAddress.getText().toString());
-        mDeviceInfo.setMqttPort(Integer.parseInt(mPort.getText().toString()));
-        mDeviceInfo.setMqttUser(mUser.getText().toString());
-        mDeviceInfo.setMqttPassword(mPassword.getText().toString());
-        mDeviceInfo.setIrSendPin(Integer.parseInt(mSendPin.getText().toString()));
-        mDeviceInfo.setIrReceivePin(Integer.parseInt(mReceivePin.getText().toString()));
+    private boolean updateValue() {
+        String address = mAddress.getText().toString();
+        String mqttPort = mPort.getText().toString();
+        String sendPin = mSendPin.getText().toString();
+        String tips = "";
+        boolean ret = true;
+        Log.d(TAG, "updateValue: " + address);
+        if (!address.isEmpty() && mqttPort.isEmpty()) {
+            tips += "mqtt 端口不能为空;";
+            mqttPort = "0";
+            ret = false;
+        }
+        if (sendPin.isEmpty()) {
+            tips += "发送引脚不能为空;";
+            sendPin = "0";
+            ret = false;
+        }
+        String receivePin = mReceivePin.getText().toString();
+        if (receivePin.isEmpty()) {
+            receivePin = "0";
+        }
+        if (ret) {
+            mDeviceInfo.setMqttAddress(mAddress.getText().toString());
+            mDeviceInfo.setMqttPort(Integer.parseInt(mqttPort));
+            mDeviceInfo.setMqttUser(mUser.getText().toString());
+            mDeviceInfo.setMqttPassword(mPassword.getText().toString());
+            mDeviceInfo.setIrSendPin(Integer.parseInt(mSendPin.getText().toString()));
+            mDeviceInfo.setIrReceivePin(Integer.parseInt(mReceivePin.getText().toString()));
+        } else {
+            Toast.makeText(mContext, tips, Toast.LENGTH_LONG).show();
+        }
+        return ret;
     }
 
     @Override
