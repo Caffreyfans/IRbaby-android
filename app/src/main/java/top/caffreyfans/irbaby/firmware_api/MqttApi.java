@@ -79,8 +79,8 @@ public class MqttApi extends Api {
                 Log.d(TAG, "mqttInit: " + deviceInfo.getMqttAddress());
                 mMqttClient = new MqttAndroidClient(context, host, "IRbaby");
                 MqttConnectOptions options = new MqttConnectOptions();
-                if (deviceInfo.getMqttUser() != null &&
-                        deviceInfo.getMqttPassword() != null) {
+                if (deviceInfo.getMqttUser() != null && !deviceInfo.getMqttUser().trim().equals("")
+                        && deviceInfo.getMqttPassword() != null) {
                     options.setUserName(deviceInfo.getMqttUser());
                     options.setPassword(deviceInfo.getMqttPassword().toCharArray());
                 }
