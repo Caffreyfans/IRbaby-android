@@ -13,7 +13,7 @@ import top.caffreyfans.irbaby.helper.UdpReceiveThread;
 public class IRApplication extends com.activeandroid.app.Application {
 
     private static final String TAG = IRApplication.class.getSimpleName();
-    private static final String ADDRESS = "https://irext.net";
+    private static final String ADDRESS = "http://irext.net";
     private static final String APP_NAME = "/irext-server";
 
     public WebAPIs mWeAPIs = WebAPIs.getInstance(ADDRESS, APP_NAME);

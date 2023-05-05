@@ -44,7 +44,7 @@ public class WebAPIs {
 
     private static WebAPIs mInstance = null;
 
-    private static final String DEFAULT_ADDRESS = "https://irext.net";
+    private static final String DEFAULT_ADDRESS = "httpa://irext.net";
     private static final String DEFAULT_APP = "/irext-server";
     private static String URL_PREFIX = DEFAULT_ADDRESS + DEFAULT_APP;
 
@@ -156,13 +156,14 @@ public class WebAPIs {
             Log.d(TAG, "Android APP IRbaby sign-in request data : " + bodyJson);
             String response = postToServer(signInURL, bodyJson);
 
-            Log.d(TAG, "Android APP IRbaby sign-in response data : " + response);
+            Log.d(TAG, response);
             LoginResponse loginResponse = new Gson().fromJson(response, LoginResponse.class);
             if (loginResponse.getStatus().getCode() == Constants.ERROR_CODE_SUCCESS) {
                 UserApp userApp = loginResponse.getEntity();
                 if (0 != userApp.getId() && null != userApp.getToken()) {
                         id = userApp.getId();
                         token = userApp.getToken();
+
                 }
             }
         } catch (Exception e) {
@@ -179,7 +180,7 @@ public class WebAPIs {
         listCategoriesRequest.setFrom(mFrom);
         listCategoriesRequest.setCount(mCount);
         String bodyJson = listCategoriesRequest.toJson();
-
+        Log.d(TAG, bodyJson);
 
         try {
             String response = postToServer(listCategoriesURL, bodyJson);

@@ -37,10 +37,10 @@
 
         <meta-data
             android:name="irext_app_key"
-            android:value="6407d3634eccac6ad60b2e07e490433d" />
+            android:value="cdf33048c9dbef2962b0f915bc7e420c" />
         <meta-data
             android:name="irext_app_secret"
-            android:value="d6730122152c89095aedbc8067fb9b2b" />
+            android:value="f00f57af376c66ca1355cfe109400dd2" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
