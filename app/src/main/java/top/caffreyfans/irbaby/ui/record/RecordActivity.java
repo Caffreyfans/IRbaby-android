@@ -137,6 +137,9 @@ public class RecordActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mIRbabyApi.disableRecord();
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
+        if (mIRbabyApi != null) {
+            mIRbabyApi.disableRecord();
+        }
     }
 }

@@ -94,9 +94,13 @@ public class ApplianceListAdapter extends BaseSwipeAdapter {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LitePal.delete(ApplianceInfo.class, mAppliancesInfoList.get(position).getId());
-                IRbabyApi iRbabyApi = new IRbabyApi(mContext, null, mAppliancesInfoList.get(position));
-                iRbabyApi.registerDevice(mAppliancesInfoList.get(position).getFile(), CategoryID.AIR_CONDITIONER, false);
+                ApplianceInfo applianceInfo = mAppliancesInfoList.get(position);
+                LitePal.delete(ApplianceInfo.class, applianceInfo.getId());
+                int catIndex = applianceInfo.getCategory() - 1;
+                CategoryID categoryID = (catIndex >= 0 && catIndex < CategoryID.values().length)
+                        ? CategoryID.values()[catIndex] : CategoryID.AIR_CONDITIONER;
+                IRbabyApi iRbabyApi = new IRbabyApi(mContext, null, applianceInfo);
+                iRbabyApi.registerDevice(applianceInfo.getFile(), categoryID, false);
                 mAppliancesInfoList.remove(position);
                 swipeLayout.close();
                 notifyDataSetChanged();
