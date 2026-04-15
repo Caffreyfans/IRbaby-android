@@ -13,6 +13,8 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
 import net.irext.webapi.utils.Constants;
 
+import org.litepal.LitePal;
+
 import java.util.List;
 import top.caffreyfans.irbaby.R;
 import top.caffreyfans.irbaby.helper.ApplianceContract;
@@ -48,6 +50,7 @@ public class DeviceAdapter extends BaseSwipeAdapter {
         SwipeLayout swipeLayout = v.findViewById(R.id.swipe);
         ImageButton imageButton = v.findViewById(R.id.edit_ib);
         ImageButton info_btn = v.findViewById(R.id.info_ib);
+        ImageButton trashButton = v.findViewById(R.id.trash);
         switch (mAction) {
             case 1:
                 imageButton.setVisibility(View.VISIBLE);
@@ -59,14 +62,22 @@ public class DeviceAdapter extends BaseSwipeAdapter {
                         mContext.startActivity(intent);
                     }
                 });
-                info_btn.setVisibility(View.VISIBLE
-                );
+                info_btn.setVisibility(View.VISIBLE);
                 info_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(mContext, DeviceInfoActivity.class);
                         intent.putExtra(ApplianceContract.DeviceSetting.DEVICE_INFO, mDeviceInfos.get(position));
                         mContext.startActivity(intent);
+                    }
+                });
+                trashButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LitePal.delete(DeviceInfo.class, mDeviceInfos.get(position).getId());
+                        mDeviceInfos.remove(position);
+                        swipeLayout.close();
+                        notifyDataSetChanged();
                     }
                 });
                 break;

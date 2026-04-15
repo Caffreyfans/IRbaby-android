@@ -47,6 +47,12 @@ public class DeviceFragment extends Fragment implements Observer {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         TimerTask timerTask = new TimerTask() {

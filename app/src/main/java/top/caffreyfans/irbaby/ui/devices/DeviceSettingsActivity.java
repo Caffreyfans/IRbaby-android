@@ -138,6 +138,12 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
+    }
+
+    @Override
     public void update(Observable o, Object arg) {
         NotifyMsgEntity entity = (NotifyMsgEntity)arg;
         int code = ((NotifyMsgEntity) arg).getCode();

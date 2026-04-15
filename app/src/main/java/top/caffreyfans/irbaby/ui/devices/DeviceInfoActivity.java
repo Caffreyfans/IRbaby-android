@@ -89,6 +89,12 @@ public class DeviceInfoActivity extends AppCompatActivity implements Observer {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
+    }
+
     private void showInfo() throws JSONException {
         if (contentJSON != null) {
             stringList.clear();

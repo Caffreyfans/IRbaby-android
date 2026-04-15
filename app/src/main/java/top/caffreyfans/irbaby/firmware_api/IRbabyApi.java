@@ -194,6 +194,7 @@ public class IRbabyApi implements Observer {
     }
 
     public void free() {
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
         if (mMqttApi != null) {
             mMqttApi.free();
         }

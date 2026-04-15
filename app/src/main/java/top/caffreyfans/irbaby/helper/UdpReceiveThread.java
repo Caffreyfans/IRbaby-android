@@ -15,7 +15,7 @@ import java.net.SocketException;
 public class UdpReceiveThread extends Thread {
     private static final String TAG = UdpReceiveThread.class.getSimpleName();
     private int mPort = 4210;
-    private static byte[] buffer = new byte[2048];
+    private byte[] buffer = new byte[2048];
     private DatagramSocket ds;
     public UdpReceiveThread() {
         try {
