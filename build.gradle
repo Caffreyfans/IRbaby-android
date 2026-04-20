@@ -3,6 +3,7 @@
 buildscript {
     repositories {
         google()
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
         jcenter()
         
     }
@@ -16,7 +17,7 @@ buildscript {
 allprojects {
     repositories {
         mavenCentral()
-        maven { url "https://jitpack.io" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
         jcenter()
