@@ -36,7 +36,9 @@ jobs:
             "build-tools;29.0.3"
 
       - name: Ensure Gradle wrapper is executable
-        run: chmod +x ./gradlew
+        run: |
+          sed -i 's/\r$//' ./gradlew
+          chmod +x ./gradlew
 
       - name: Set up JDK 8 for Gradle build
         uses: actions/setup-java@v4
