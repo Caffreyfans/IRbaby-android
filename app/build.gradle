@@ -47,7 +47,7 @@ dependencies {
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation project(path: ':web-api')
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
-    implementation 'org.litepal.android:java:3.0.0'
+    implementation 'com.github.guolindev:LitePal:3.0.0'
     implementation files('libs/activeandroid-3.1.0-SNAPSHOT.jar')
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
