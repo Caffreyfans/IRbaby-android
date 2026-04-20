@@ -24,6 +24,7 @@ public class UdpSendThread extends Thread {
         try {
             InetAddress ip = InetAddress.getByName(mAddr);
             mSocket = new DatagramSocket();
+            mSocket.setBroadcast(true);
             byte[] tmp = mSendMsg.toString().getBytes();
             mSocket.send(new DatagramPacket(tmp, tmp.length, ip, mPort));
             mSocket.close();

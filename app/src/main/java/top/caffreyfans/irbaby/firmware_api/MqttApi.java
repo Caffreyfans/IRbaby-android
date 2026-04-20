@@ -1,6 +1,7 @@
 package top.caffreyfans.irbaby.firmware_api;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -71,10 +72,11 @@ public class MqttApi extends Api {
             }
         };
 
-        if (deviceInfo.getMqttAddress() != null && deviceInfo.getMqttPort() != 0) {
+        if (!TextUtils.isEmpty(deviceInfo.getMqttAddress() != null
+            ? deviceInfo.getMqttAddress().trim() : null) && deviceInfo.getMqttPort() > 0) {
             try {
                 String host = "tcp://";
-                host += deviceInfo.getMqttAddress() + ":";
+            host += deviceInfo.getMqttAddress().trim() + ":";
                 host += deviceInfo.getMqttPort();
                 Log.d(TAG, "mqttInit: " + deviceInfo.getMqttAddress());
                 mMqttClient = new MqttAndroidClient(context, host, "IRbaby");
@@ -112,7 +114,7 @@ public class MqttApi extends Api {
         mqttMessage.setQos(0);
         mqttMessage.setRetained(false);
         mqttMessage.setPayload(payload.getBytes());
-        if (mMqttClient.isConnected()) {
+        if (mMqttClient != null && mMqttClient.isConnected()) {
             try {
                 mMqttClient.publish(topic, mqttMessage);
             } catch (MqttException e) {

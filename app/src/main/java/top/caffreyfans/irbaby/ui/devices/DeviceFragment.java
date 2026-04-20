@@ -64,9 +64,11 @@ public class DeviceFragment extends Fragment implements Observer {
     @Override
     public void onPause() {
         super.onPause();
-        mTimer.cancel();
-        mTimer.purge();
-        mTimer = null;
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer.purge();
+            mTimer = null;
+        }
     }
 
     @Override
@@ -77,6 +79,15 @@ public class DeviceFragment extends Fragment implements Observer {
             mDeviceInfos = LitePal.findAll(DeviceInfo.class);
             mDeviceAdapter = new DeviceAdapter(mContext, mDeviceInfos, 1);
             mListView.setAdapter(mDeviceAdapter);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
+        if (mCommonApi != null) {
+            mCommonApi.free();
         }
     }
 }

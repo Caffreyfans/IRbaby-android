@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -37,10 +38,10 @@
 
         <meta-data
             android:name="irext_app_key"
-            android:value="cdf33048c9dbef2962b0f915bc7e420c" />
+            android:value="00567968d9316665fe5180fa2b1a24aa" />
         <meta-data
             android:name="irext_app_secret"
-            android:value="f00f57af376c66ca1355cfe109400dd2" />
+            android:value="6a111f71549eb485e616252f208017f4" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

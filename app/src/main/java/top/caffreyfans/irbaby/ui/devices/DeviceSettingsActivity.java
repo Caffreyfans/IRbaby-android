@@ -94,9 +94,9 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
     }
 
     private boolean updateValue() {
-        String address = mAddress.getText().toString();
-        String mqttPort = mPort.getText().toString();
-        String sendPin = mSendPin.getText().toString();
+        String address = mAddress.getText().toString().trim();
+        String mqttPort = mPort.getText().toString().trim();
+        String sendPin = mSendPin.getText().toString().trim();
         String tips = "";
         boolean ret = true;
         Log.d(TAG, "updateValue: " + address);
@@ -110,18 +110,24 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
             sendPin = "0";
             ret = false;
         }
-        String receivePin = mReceivePin.getText().toString();
+        String receivePin = mReceivePin.getText().toString().trim();
         if (receivePin.isEmpty()) {
             receivePin = "0";
         }
         if (ret) {
-            mDeviceInfo.setMqttAddress(mAddress.getText().toString());
-            mDeviceInfo.setMqttPort(Integer.parseInt(mqttPort));
-            mDeviceInfo.setMqttUser(mUser.getText().toString());
-            mDeviceInfo.setMqttPassword(mPassword.getText().toString());
-            mDeviceInfo.setIrSendPin(Integer.parseInt(mSendPin.getText().toString()));
-            mDeviceInfo.setIrReceivePin(Integer.parseInt(mReceivePin.getText().toString()));
-        } else {
+            try {
+                mDeviceInfo.setMqttAddress(address);
+                mDeviceInfo.setMqttPort(Integer.parseInt(mqttPort));
+                mDeviceInfo.setMqttUser(mUser.getText().toString().trim());
+                mDeviceInfo.setMqttPassword(mPassword.getText().toString());
+                mDeviceInfo.setIrSendPin(Integer.parseInt(sendPin));
+                mDeviceInfo.setIrReceivePin(Integer.parseInt(receivePin));
+            } catch (NumberFormatException e) {
+                tips += "端口和引脚必须是数字;";
+                ret = false;
+            }
+        }
+        if (!ret) {
             Toast.makeText(mContext, tips, Toast.LENGTH_LONG).show();
         }
         return ret;
@@ -149,6 +155,15 @@ public class DeviceSettingsActivity extends AppCompatActivity implements Observe
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
+        if (mCommonApi != null) {
+            mCommonApi.free();
         }
     }
 }

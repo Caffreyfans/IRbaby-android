@@ -3,6 +3,7 @@ package top.caffreyfans.irbaby.firmware_api;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 import android.util.Log;
 
 import net.irext.webapi.bean.ACStatus;
@@ -42,10 +43,17 @@ public class IRbabyApi implements Observer {
         } else {
             mUdpApi = new UdpApi(context, applianceInfo.getIp());
         }
-        if (mApplianceInfo != null && deviceInfo != null) {
+        if (mApplianceInfo != null && deviceInfo != null && hasValidMqttConfig(deviceInfo)) {
             mMqttApi = new MqttApi(context, deviceInfo, mApplianceInfo);
         }
         switchApi();
+    }
+
+    private boolean hasValidMqttConfig(DeviceInfo deviceInfo) {
+        return deviceInfo != null
+                && !TextUtils.isEmpty(deviceInfo.getMqttAddress() != null
+                ? deviceInfo.getMqttAddress().trim() : null)
+                && deviceInfo.getMqttPort() > 0;
     }
 
     public IRbabyApi(Context context) {
@@ -194,6 +202,7 @@ public class IRbabyApi implements Observer {
     }
 
     public void free() {
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
         if (mMqttApi != null) {
             mMqttApi.free();
         }

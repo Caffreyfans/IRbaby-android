@@ -195,4 +195,13 @@ public class DeviceInfoActivity extends AppCompatActivity implements Observer {
 
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
+        if (mIRbabyApi != null) {
+            mIRbabyApi.free();
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package top.caffreyfans.irbaby.helper;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
@@ -17,11 +19,22 @@ public class UdpReceiveThread extends Thread {
     private int mPort = 4210;
     private static byte[] buffer = new byte[2048];
     private DatagramSocket ds;
-    public UdpReceiveThread() {
+    private WifiManager.MulticastLock multicastLock;
+
+    public UdpReceiveThread(Context context) {
         try {
             ds = new DatagramSocket(mPort);
+            ds.setBroadcast(true);
         } catch (SocketException e) {
             e.printStackTrace();
+        }
+
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext()
+                .getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager != null) {
+            multicastLock = wifiManager.createMulticastLock(TAG);
+            multicastLock.setReferenceCounted(false);
+            multicastLock.acquire();
         }
     }
 

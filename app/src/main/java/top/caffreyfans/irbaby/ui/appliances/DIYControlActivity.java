@@ -87,4 +87,13 @@ public class DIYControlActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mIRbabyApi != null) {
+            mIRbabyApi.free();
+        }
+    }
+
+
 }

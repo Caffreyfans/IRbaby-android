@@ -9,30 +9,37 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.regex.Pattern;
+
+import org.litepal.LitePal;
 
 import top.caffreyfans.irbaby.R;
 import top.caffreyfans.irbaby.firmware_api.IRbabyApi;
 import top.caffreyfans.irbaby.helper.ApplianceContract;
 import top.caffreyfans.irbaby.helper.NotifyMsgEntity;
 import top.caffreyfans.irbaby.helper.UdpNotifyManager;
+import top.caffreyfans.irbaby.model.ApplianceInfo;
 import top.caffreyfans.irbaby.model.DeviceInfo;
 
 public class RecordActivity extends AppCompatActivity
         implements Observer{
 
     private final static String TAG = RecordActivity.class.getSimpleName();
+    private static final Pattern SIGNAL_FILE_PATTERN = Pattern.compile("^[A-Za-z0-9._-]+$");
 
     private EditText meditText;
     private DeviceInfo mDeviceInfo;
@@ -66,10 +73,15 @@ public class RecordActivity extends AppCompatActivity
         mTextView = (TextView) findViewById(R.id.raw_tv);
         test_btn = (Button) findViewById(R.id.test_bt);
         save_btn = (Button) findViewById(R.id.save_bt);
+        updateActionButtons(false);
 
         test_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!hasRecordedSignal()) {
+                    Toast.makeText(RecordActivity.this, R.string.record_signal_missing, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 mIRbabyApi.sendSignal("test", signalType, "file");
             }
         });
@@ -92,9 +104,18 @@ public class RecordActivity extends AppCompatActivity
                new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
-                       String fileName = meditText.getText().toString();
+                       String fileName = meditText.getText().toString().trim();
+                       if (!isValidFileName(fileName)) {
+                           Toast.makeText(RecordActivity.this, R.string.record_invalid_name, Toast.LENGTH_SHORT).show();
+                           return;
+                       }
+                       if (hasDuplicateFileName(fileName)) {
+                           Toast.makeText(RecordActivity.this, R.string.record_duplicate_name, Toast.LENGTH_SHORT).show();
+                           return;
+                       }
                        Log.d(TAG, "onClick: signalType = " + signalType);
                        mIRbabyApi.saveSignal(fileName, signalType);
+                       Toast.makeText(RecordActivity.this, R.string.record_save_success, Toast.LENGTH_SHORT).show();
                    }
                });
        inputDialog.setNegativeButton(getString(R.string.dialog_cancel_button),
@@ -105,6 +126,24 @@ public class RecordActivity extends AppCompatActivity
                    }
                });
        inputDialog.show();
+    }
+
+    private boolean hasRecordedSignal() {
+        return !TextUtils.isEmpty(signalType);
+    }
+
+    private void updateActionButtons(boolean enabled) {
+        test_btn.setEnabled(enabled);
+        save_btn.setEnabled(enabled);
+    }
+
+    private boolean isValidFileName(String fileName) {
+        return !TextUtils.isEmpty(fileName) && SIGNAL_FILE_PATTERN.matcher(fileName).matches();
+    }
+
+    private boolean hasDuplicateFileName(String fileName) {
+        return LitePal.where("mac = ? and file = ?", mDeviceInfo.getMac(), fileName)
+                .count(ApplianceInfo.class) > 0;
     }
 
     @Override
@@ -121,14 +160,22 @@ public class RecordActivity extends AppCompatActivity
     public void update(Observable o, Object arg) {
         NotifyMsgEntity entity = (NotifyMsgEntity)arg;
         int code = (int)entity.getCode();
-        JSONObject jsonObject;
         if (code == UdpNotifyManager.RECORD_RT) {
             try {
-                jsonObject = new JSONObject(entity.getData().toString());
-                mTextView.setText(jsonObject.getString ("params"));
-                signalType = jsonObject.getJSONObject("params").getString("signal");
+                JSONObject jsonObject = new JSONObject(entity.getData().toString());
+                JSONObject params = jsonObject.optJSONObject("params");
+                if (params == null) {
+                    mTextView.setText(entity.getData().toString());
+                    signalType = null;
+                    updateActionButtons(false);
+                    return;
+                }
+                mTextView.setText(params.toString(2));
+                signalType = params.optString("signal", null);
+                updateActionButtons(hasRecordedSignal());
 
             } catch (JSONException e) {
+                updateActionButtons(false);
                 e.printStackTrace();
             }
         }
@@ -137,6 +184,10 @@ public class RecordActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mIRbabyApi.disableRecord();
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
+        if (mIRbabyApi != null) {
+            mIRbabyApi.disableRecord();
+            mIRbabyApi.free();
+        }
     }
 }

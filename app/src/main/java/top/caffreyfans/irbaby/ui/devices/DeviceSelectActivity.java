@@ -75,9 +75,11 @@ public class DeviceSelectActivity  extends AppCompatActivity implements Observer
     @Override
     public void onPause() {
         super.onPause();
-        mTimer.cancel();
-        mTimer.purge();
-        mTimer = null;
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer.purge();
+            mTimer = null;
+        }
     }
 
     @Override
@@ -100,5 +102,14 @@ public class DeviceSelectActivity  extends AppCompatActivity implements Observer
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UdpNotifyManager.getUdpNotifyManager().deleteObserver(this);
+        if (mCommonApi != null) {
+            mCommonApi.free();
+        }
     }
 }

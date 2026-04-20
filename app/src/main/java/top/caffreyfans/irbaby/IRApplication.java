@@ -35,7 +35,7 @@ public class IRApplication extends com.activeandroid.app.Application {
             }
         }.start();
 
-        new UdpReceiveThread().start();
+        new UdpReceiveThread(this).start();
 
         Log.d(TAG, "onCreate: " + PackageUtils.getCertificateSHA1Fingerprint(this));
     }

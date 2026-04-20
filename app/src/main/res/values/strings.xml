@@ -87,6 +87,10 @@
     <string name="record_description">将遥控器对准模块，按下要学习的按钮</string>
     <string name="record_test">测试信号</string>
     <string name="record_save">保存信号</string>
+    <string name="record_signal_missing">请先录制到信号</string>
+    <string name="record_invalid_name">保存名只能包含字母、数字、点、下划线和短横线</string>
+    <string name="record_duplicate_name">保存名已存在，请换一个名称</string>
+    <string name="record_save_success">信号已保存</string>
 
     <!-- DIY -->
     <string name="raw_send">信号发射</string>
