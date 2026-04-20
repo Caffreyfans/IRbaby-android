@@ -131,11 +131,12 @@ public class UdpApi extends Api {
             e.printStackTrace();
         }
         final Set<String> targets = getDiscoveryTargets();
+        final JSONObject discoveryMessage = msg;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 for (String target : targets) {
-                    new UdpSendThread(target, msg).run();
+                    new UdpSendThread(target, discoveryMessage).run();
                 }
             }
         }).start();
