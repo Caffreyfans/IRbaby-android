@@ -19,14 +19,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 8
+      - name: Set up JDK 17 for Android SDK tools
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '8'
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+          java-version: '17'
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
@@ -40,6 +37,15 @@ jobs:
 
       - name: Ensure Gradle wrapper is executable
         run: chmod +x ./gradlew
+
+      - name: Set up JDK 8 for Gradle build
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build release APK and run unit tests
         run: ./gradlew --no-daemon clean assembleRelease test
