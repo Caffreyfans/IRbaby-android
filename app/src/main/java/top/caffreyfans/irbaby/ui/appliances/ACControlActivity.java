@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.irext.webapi.bean.ACStatus;
 import net.irext.webapi.model.RemoteIndex;
@@ -30,6 +32,7 @@ import top.caffreyfans.irbaby.IRApplication;
 import top.caffreyfans.irbaby.MainActivity;
 import top.caffreyfans.irbaby.R;
 import top.caffreyfans.irbaby.firmware_api.IRbabyApi;
+import top.caffreyfans.irbaby.firmware_api.PhoneIrApi;
 import top.caffreyfans.irbaby.helper.ApplianceContract;
 import top.caffreyfans.irbaby.model.ApplianceInfo;
 import top.caffreyfans.irbaby.model.DeviceInfo;
@@ -52,10 +55,12 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
     private ProgressBar mProgressBar;
     private int mRemoteIndex = 0;
     private boolean mIsParse = false;
+    private boolean mUsePhoneIr;
     private ACStatus mACStatus;
     private ApplianceInfo mApplianceInfo;
     private DeviceInfo mDeviceInfo;
     private IRbabyApi mIRbabyApi;
+    private PhoneIrApi mPhoneIrApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +100,7 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
         if (intent.hasExtra(ApplianceContract.Control.APPLIANCE_INFO)) {
             mApplianceInfo = (ApplianceInfo) intent.getSerializableExtra(ApplianceContract.Control.APPLIANCE_INFO);
             this.setTitle(mApplianceInfo.getName());
+            mUsePhoneIr = TextUtils.isEmpty(mApplianceInfo.getMac());
             List<DeviceInfo> deviceInfos = LitePal.findAll(DeviceInfo.class);
             for (DeviceInfo deviceInfo : deviceInfos) {
                 if (deviceInfo.getMac().equals(mApplianceInfo.getMac())) {
@@ -106,10 +112,18 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
         if (intent.hasExtra(ApplianceContract.Control.IS_PARSE)) {
             mIsParse = intent.getBooleanExtra(ApplianceContract.Control.IS_PARSE, false);
             new FetchIndexData().execute();
-        } else {
-
         }
-        mIRbabyApi = new IRbabyApi(this, mDeviceInfo, mApplianceInfo);
+
+        if (mUsePhoneIr) {
+            mPhoneIrApi = new PhoneIrApi(this);
+            if (!mPhoneIrApi.hasIrEmitter()) {
+                Toast.makeText(this, R.string.phone_ir_not_supported, Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+        } else {
+            mIRbabyApi = new IRbabyApi(this, mDeviceInfo, mApplianceInfo);
+        }
         initACStatus();
         refreshAcStatusUI();
     }
@@ -118,43 +132,54 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mIRbabyApi.free();
+        if (mIRbabyApi != null) {
+            mIRbabyApi.free();
+        }
     }
 
     @Override
     public void onClick(View v) {
+        ACFunction function = null;
+        boolean changeWindDirection = false;
         switch (v.getId()) {
             case R.id.ac_power_ctrl_btn:
                 mACStatus.acPower = ACPower.values()[(mACStatus.acPower.ordinal() + 1) % ACPower.values().length] ;
+                function = ACFunction.FUNCTION_SWITCH_POWER;
                 break;
 
             case R.id.ac_mode_ctrl_btn:
                 mACStatus.acMode = ACMode.values()[(mACStatus.acMode.ordinal() + 1) % ACMode.values().length];
+                function = ACFunction.FUNCTION_CHANGE_MODE;
                 break;
 
             case R.id.ac_fan_speed_ctrl_btn:
                 mACStatus.acWindSpeed = ACWindSpeed.values()[(mACStatus.acWindSpeed.ordinal() + 1) % ACWindSpeed.values().length];
-
+                function = ACFunction.FUNCTION_SWITCH_WIND_SPEED;
                 break;
 
             case R.id.ac_fan_direction_ctrl_btn:
                 mACStatus.acWindDir = ACWindDirection.values()[(mACStatus.acWindDir.ordinal() + 1) % ACWindDirection.values().length];
+                function = ACFunction.FUNCTION_SWITCH_WIND_DIR;
+                changeWindDirection = true;
                 break;
 
             case R.id.ac_fan_swing_ctrl_btn:
                 mACStatus.acSwing = ACSwing.values()[(mACStatus.acSwing.ordinal() + 1) % ACSwing.values().length];
+                function = ACFunction.FUNCTION_SWITCH_SWING;
                 break;
 
             case R.id.ac_temperature_subtract_ctrl_btn:
                 if (mACStatus.acTemp.ordinal() -1 >= ACTemperature.TEMP_16.ordinal()) {
                     mACStatus.acTemp = ACTemperature.values()[mACStatus.acTemp.ordinal() - 1];
                 }
+                function = ACFunction.FUNCTION_TEMPERATURE_DOWN;
                 break;
 
             case R.id.ac_temperature_add_ctrl_btn:
                 if (mACStatus.acTemp.ordinal() + 1 <= ACTemperature.TEMP_30.ordinal()) {
                     mACStatus.acTemp = ACTemperature.values()[mACStatus.acTemp.ordinal() + 1];
                 }
+                function = ACFunction.FUNCTION_TEMPERATURE_UP;
                 break;
 
             case R.id.ac_parse_previous_btn:
@@ -168,7 +193,9 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
 
             case R.id.ac_parse_save_btn:
                 mIsParse = false;
-                mIRbabyApi.registerDevice(mApplianceInfo.getFile(), CategoryID.AIR_CONDITIONER, true);
+                if (!mUsePhoneIr && mIRbabyApi != null) {
+                    mIRbabyApi.registerDevice(mApplianceInfo.getFile(), CategoryID.AIR_CONDITIONER, true);
+                }
                 saveAppliance();
                 break;
 
@@ -183,9 +210,33 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
         }
         View parent = (View) v.getParent();
         if (parent.getId() != R.id.ac_parse_cl) {
-            mIRbabyApi.sendSignal(mACStatus);
+            sendCurrentSignal(function, changeWindDirection);
         }
         refreshAcStatusUI();
+    }
+
+    private void sendCurrentSignal(ACFunction function, boolean changeWindDirection) {
+        if (mUsePhoneIr) {
+            if (mPhoneIrApi == null || function == null) {
+                return;
+            }
+            mPhoneIrApi.sendAcSignal(mApplianceInfo, mACStatus, function, changeWindDirection,
+                    new PhoneIrApi.Callback() {
+                        @Override
+                        public void onSuccess() {
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            Toast.makeText(ACControlActivity.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            return;
+        }
+
+        if (mIRbabyApi != null) {
+            mIRbabyApi.sendSignal(mACStatus);
+        }
     }
 
     private void initACStatus() {
@@ -266,7 +317,7 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void saveAppliance() {
-        mApplianceInfo.setSignal("IR");
+        mApplianceInfo.setSignal(mUsePhoneIr ? "PHONE_IR" : "IR");
         mApplianceInfo.save();
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -293,6 +344,12 @@ public class ACControlActivity extends AppCompatActivity implements View.OnClick
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.appliance_control, menu);
+        if (mUsePhoneIr) {
+            MenuItem exportItem = menu.findItem(R.id.action_export);
+            if (exportItem != null) {
+                exportItem.setVisible(false);
+            }
+        }
         return true;
     }
 

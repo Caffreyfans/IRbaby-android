@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import net.irext.webapi.bean.ACStatus;
 import net.irext.webapi.model.*;
 import net.irext.webapi.utils.Constants;
 import net.irext.webapi.request.*;
@@ -354,11 +355,19 @@ public class WebAPIs {
     @SuppressWarnings("unused")
     @Deprecated
     public int[] decodeIR(int indexId) {
+        return decodeIR(indexId, null, 0, 0);
+    }
+
+    @SuppressWarnings("unused")
+    public int[] decodeIR(int indexId, ACStatus acStatus, int keyCode, int changeWindDir) {
         String decodeURL = URL_PREFIX + SERVICE_ONLINE_DECODE;
         DecodeRequest decodeRequest = new DecodeRequest();
         decodeRequest.setId(id);
         decodeRequest.setToken(token);
         decodeRequest.setIndexId(indexId);
+        decodeRequest.setAcStatus(acStatus);
+        decodeRequest.setKeyCode(keyCode);
+        decodeRequest.setChangeWindDir(changeWindDir);
 
         String bodyJson = decodeRequest.toJson();
 

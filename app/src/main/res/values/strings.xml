@@ -9,6 +9,9 @@
     <string name="action_settings">Settings</string>
 
     <string name="action_export">MQTT 导出</string>
+    <string name="add_appliance_method_title">添加方式</string>
+    <string name="add_appliance_irbaby_device">IRbaby 设备</string>
+    <string name="add_appliance_phone_ir">手机红外（空调）</string>
 
     <string name="appliances">家电控制</string>
     <string name="devices_manage">设备管理</string>
@@ -64,6 +67,8 @@
     <!-- AC select title -->
     <string name="select_category">电器选择</string>
     <string name="select_brand">品牌选择</string>
+    <string name="category_air_conditioner">空调</string>
+    <string name="phone_ir_not_supported">当前手机不支持红外发射</string>
 
     <!-- Device Settings -->
     <!-- MQTT -->

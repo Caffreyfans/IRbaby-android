@@ -2,6 +2,7 @@ package top.caffreyfans.irbaby.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,9 +99,11 @@ public class ApplianceListAdapter extends BaseSwipeAdapter {
                 int categoryIndex = applianceInfo.getCategory() - 1;
                 CategoryID categoryID = CategoryID.values()[categoryIndex];
                 LitePal.delete(ApplianceInfo.class, applianceInfo.getId());
-                IRbabyApi iRbabyApi = new IRbabyApi(mContext, null, applianceInfo);
-                iRbabyApi.registerDevice(applianceInfo.getFile(), categoryID, false);
-                iRbabyApi.free();
+                if (!TextUtils.isEmpty(applianceInfo.getMac())) {
+                    IRbabyApi iRbabyApi = new IRbabyApi(mContext, null, applianceInfo);
+                    iRbabyApi.registerDevice(applianceInfo.getFile(), categoryID, false);
+                    iRbabyApi.free();
+                }
                 mAppliancesInfoList.remove(position);
                 swipeLayout.close();
                 notifyDataSetChanged();

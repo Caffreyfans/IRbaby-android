@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -80,6 +81,10 @@ public class ApplianceSelectActivity extends AppCompatActivity {
         new FetchData().execute();
     }
 
+    private boolean isPhoneIrMode() {
+        return mApplianceInfo != null && TextUtils.isEmpty(mApplianceInfo.getMac());
+    }
+
     private class FetchData extends AsyncTask<Void, Void, List<String>> {
 
         private List<Category> mCategoryList;
@@ -90,9 +95,13 @@ public class ApplianceSelectActivity extends AppCompatActivity {
         protected List<String> doInBackground(Void... voids) {
             switch (mContentID) {
                 case LIST_CATEGORIES:
-                    mCategoryList = mApp.mWeAPIs.listCategories();
-                    for (Category category : mCategoryList) {
-                        mListString.add(category.getName());
+                    if (isPhoneIrMode()) {
+                        mListString.add(getString(R.string.category_air_conditioner));
+                    } else {
+                        mCategoryList = mApp.mWeAPIs.listCategories();
+                        for (Category category : mCategoryList) {
+                            mListString.add(category.getName());
+                        }
                     }
                     break;
 
@@ -129,7 +138,11 @@ public class ApplianceSelectActivity extends AppCompatActivity {
 
                     switch (mContentID) {
                         case LIST_CATEGORIES:
-                            mApplianceInfo.setCategory(CategoryID.values()[position].getValue());
+                            if (isPhoneIrMode()) {
+                                mApplianceInfo.setCategory(CategoryID.AIR_CONDITIONER.getValue());
+                            } else {
+                                mApplianceInfo.setCategory(CategoryID.values()[position].getValue());
+                            }
                             Intent intent = new Intent(mContext, ApplianceSelectActivity.class);
                             intent.putExtra(ApplianceContract.Select.TITLE, getString(R.string.select_brand));
                             intent.putExtra(ApplianceContract.Select.CONTENT_ID, ContentID.LIST_BRANDS);
